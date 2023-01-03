@@ -54,8 +54,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class SplitRoomSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
-    creator = serializers.ReadOnlyField()
 
     class Meta:
         model = SplitRoom
-        fields = '__all__'
+        exclude = ['creator']
+        

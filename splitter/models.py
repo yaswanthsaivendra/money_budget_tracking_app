@@ -53,8 +53,8 @@ class Personal_expense(models.Model):
 
 
 class Simple_transaction(models.Model):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transaction_sender')
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transaction_reciever')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='simpletransaction_sender')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='simpletransaction_reciever')
     amount = models.PositiveIntegerField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -76,3 +76,14 @@ class SplitRoom(models.Model):
 
     def __str__(self) -> str:
         return f"Room - {self.name} with split amount {self.amount}"
+
+    
+class debt(models.Model):
+    room = models.ForeignKey(SplitRoom, on_delete=models.CASCADE, related_name='room_debts')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transaction_sender')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transaction_receiver')
+    amount = models.PositiveIntegerField()
+    is_paid = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return f"{self.sender} paying to {self.receiver} in room {self.room.name}"

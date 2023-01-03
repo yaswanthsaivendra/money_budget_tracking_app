@@ -11,6 +11,7 @@ from .views import (
     PersonalBudgetApiView,
     SplitRoomListCreateView,
     AllUsersListView,
+    SplitRoomRetrieveUpdateDeleteView,
 )
 
 urlpatterns = [
@@ -29,6 +30,7 @@ urlpatterns = [
     path("personal-budget/", PersonalBudgetApiView.as_view()),
     # Split Rooms
     path("splitroom/", SplitRoomListCreateView.as_view() ),
+    path("splitroom/<int:pk>/", SplitRoomRetrieveUpdateDeleteView.as_view() ),
     # all users 
     path("list-users/", AllUsersListView.as_view() ),
 

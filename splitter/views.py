@@ -27,7 +27,8 @@ from .models import (
     Simple_transaction,
     UserProfile,
     Category,
-    SplitRoom
+    SplitRoom,
+    debt
 )
 
 # Create your views here.
@@ -274,11 +275,62 @@ class SplitRoomListCreateView(GenericAPIView,
     #     return SplitRoom.objects.all().order_by('-created_at').filter(splitters=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        splitroom = serializer.save(creator=self.request.user)
+        splitters = serializer.validated_data["splitters"]
+        payer = serializer.validated_data["payer"]
+        for splitter in splitters:
+            if splitter == payer :
+                pass
+            else :
+                debt.objects.create(room = splitroom, receiver=payer, sender=splitter, amount=int(splitroom.amount)/len(splitters))
         return super().perform_create(serializer)
+
 
     # def get(self, request:Request, *args, **kwargs):
     #     return self.list(request, *args, **kwargs)
 
     def post(self, request:Request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
+
+class SplitRoomRetrieveUpdateDeleteView(
+    GenericAPIView,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin
+    ):
+
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = SplitRoomSerializer
+
+    def get_queryset(self):
+        return SplitRoom.objects.all().order_by('-created_at').filter(creator=self.request.user)
+
+    def perform_update(self, serializer):
+        updated_splitroom = serializer.save()
+        debts = debt.objects.filter(room=updated_splitroom)
+        splitters = serializer.validated_data["splitters"]
+        payer = serializer.validated_data["payer"]
+        debts.delete()
+        for splitter in splitters:
+            if splitter == payer :
+                pass
+            else :
+                debt.objects.create(room = updated_splitroom, receiver=payer, sender=splitter, amount=int(updated_splitroom.amount)/len(splitters))
+        return super().perform_update(serializer)
+
+
+    def get(self, request:Request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request:Request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def perform_destroy(self, instance):
+        debts = debt.objects.filter(room=instance)
+        debts.delete()
+        return super().perform_destroy(instance)
+
+    def delete(self, request:Request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
