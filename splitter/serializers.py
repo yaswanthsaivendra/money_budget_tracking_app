@@ -34,8 +34,7 @@ class SimpleTransactionSerializer(serializers.ModelSerializer):
 
 
 
-# class FriendSerializer(serializers.Serializer):
-#     friend = serializers.CharField(max_length=40)
+
 
 class UserSerializer(serializers.ModelSerializer):
     
@@ -43,13 +42,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields=['id', 'username', 'email']
 
-class FriendSerializer(serializers.ModelSerializer):
-    username = serializers.ReadOnlyField()
-    email = serializers.ReadOnlyField()
-
-    class Meta:
-        model = User
-        fields=['id', 'username', 'email']
+class FriendSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
 
 class CategorySerializer(serializers.ModelSerializer):
     title = serializers.ReadOnlyField()

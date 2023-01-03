@@ -62,7 +62,7 @@ class AddFriendApiView(APIView):
         serializer = self.serializer_class(data=data)
 
         if serializer.is_valid():
-            print(serializer.data)
+            print(serializer)
             id = serializer.data['id']
             friend = User.objects.filter(id=id).first()
             if not friend:
