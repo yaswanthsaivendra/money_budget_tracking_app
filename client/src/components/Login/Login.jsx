@@ -14,6 +14,7 @@ const Login = () => {
   });
   const [registerFormDetails, setRegisterFormDetails] = useState({
     username: "",
+    email:"",
     password: "",
     cpassword: "",
   });
@@ -40,21 +41,22 @@ const Login = () => {
     localStorage.setItem("token", token);
     
   };
-  const registerSubmit = (evt) => {
+  const registerSubmit = async (evt) => {
     evt.preventDefault();
 
-    let data = { loginFormDetails };
-
-    fetch("https://pointy-gauge.glitch.me/api/form", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => console.log("Success:", JSON.stringify(response)))
-      .catch((error) => console.error("Error:", error));
+    let data = { registerFormDetails };
+    const res = await axios.post("/auth/signup")
+    console.log(res)
+    // fetch("https://pointy-gauge.glitch.me/api/form", {
+    //   method: "POST",
+    //   body: JSON.stringify(data),
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // })
+    //   .then((response) => response.json())
+    //   .then((response) => console.log("Success:", JSON.stringify(response)))
+    //   .catch((error) => console.error("Error:", error));
   };
 
   return (
@@ -80,6 +82,7 @@ const Login = () => {
                   defaultValue={loginFormDetails.username}
                   onChange={loginHandleInput}
                 />
+               
 
                 <TextField
                   style={{ margin: "10px 5px" }}
@@ -135,6 +138,16 @@ const Login = () => {
                   variant="outlined"
                   name="username"
                   defaultValue={registerFormDetails.username}
+                  onChange={registerHandleInput}
+                />
+                 <TextField
+                  style={{ margin: "10px 5px" }}
+                  fullWidth
+                  type="text"
+                  label="email"
+                  variant="outlined"
+                  name="email"
+                  defaultValue={registerFormDetails.email}
                   onChange={registerHandleInput}
                 />
 
