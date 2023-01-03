@@ -50,7 +50,9 @@ class LoginView(APIView):
 
     def get(self, request:Request):
         response = {
-            "user" : str(request.user),
+            "id" : request.user.id,
+            "username" : str(request.user.username),
+            "email" : str(request.user.email),
             "auth" : str(request.auth)
         }
 

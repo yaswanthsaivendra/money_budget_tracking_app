@@ -3,7 +3,9 @@ from .models import (
     Personal_income,
     Personal_expense,
     Simple_transaction,
-    UserProfile
+    UserProfile,
+    Category, 
+    SplitRoom
 )
 from django.contrib.auth.models import User
 
@@ -16,26 +18,50 @@ class PersonalIncomeSerializer(serializers.ModelSerializer):
         model = Personal_income
         exclude = ['user']
 
-class PersonalExpenseSerializer(serializers.Serializer):
+class PersonalExpenseSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Personal_expense
         exclude = ['user']
 
-class SimpleTransactionSerializer(serializers.Serializer):
+class SimpleTransactionSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Simple_transaction
-        fields = '__all__'
+        exclude = ['sender']
 
 
 
-class FriendSerializer(serializers.Serializer):
-    friend = serializers.CharField(max_length=40)
+# class FriendSerializer(serializers.Serializer):
+#     friend = serializers.CharField(max_length=40)
 
-class ListFriendsSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = User
-        fields=['username', 'email']
+        fields=['id', 'username', 'email']
+
+class FriendSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField()
+    email = serializers.ReadOnlyField()
+
+    class Meta:
+        model = User
+        fields=['id', 'username', 'email']
+
+class CategorySerializer(serializers.ModelSerializer):
+    title = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+class SplitRoomSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(read_only=True)
+    creator = serializers.ReadOnlyField()
+
+    class Meta:
+        model = SplitRoom
+        fields = '__all__'

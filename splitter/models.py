@@ -41,7 +41,7 @@ class Personal_income(models.Model):
 
     
 class Personal_expense(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.PositiveIntegerField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -53,8 +53,8 @@ class Personal_expense(models.Model):
 
 
 class Simple_transaction(models.Model):
-    sender = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='sender')
-    receiver = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='reciever')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transaction_sender')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transaction_reciever')
     amount = models.PositiveIntegerField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -63,3 +63,16 @@ class Simple_transaction(models.Model):
 
     def __str__(self) -> str:
         return f"{self.sender.username} sending amount {self.amount} to {self.receiver.username} under {self.category} category"
+
+
+class SplitRoom(models.Model):
+    name = models.CharField(max_length=40)
+    amount = models.PositiveIntegerField()
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="creator_splitroom")
+    payer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="payer_splitroom")
+    splitters = models.ManyToManyField(User, related_name='member_splitrooms')
+
+    def __str__(self) -> str:
+        return f"Room - {self.name} with split amount {self.amount}"

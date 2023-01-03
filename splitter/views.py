@@ -17,16 +17,38 @@ from .serializers import (
     PersonalIncomeSerializer,
     SimpleTransactionSerializer,
     FriendSerializer,
-    ListFriendsSerializer
+    CategorySerializer,
+    SplitRoomSerializer,
+    UserSerializer
 )
 from .models import (
     Personal_expense,
     Personal_income,
     Simple_transaction,
-    UserProfile
+    UserProfile,
+    Category,
+    SplitRoom
 )
 
 # Create your views here.
+
+## all-users
+
+class AllUsersListView(GenericAPIView,
+    ListModelMixin
+    ):
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return User.objects.all()
+
+
+    def get(self, request:Request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    
 
 ##Friends
 
@@ -37,20 +59,21 @@ class AddFriendApiView(APIView):
     def post(self, request:Request, *args, **kwargs):
         data = request.data
 
-
         serializer = self.serializer_class(data=data)
 
         if serializer.is_valid():
-            friend = serializer.validated_data["friend"]
-            friend = User.objects.filter(username=friend).first()
+            print(serializer.data)
+            id = serializer.data['id']
+            friend = User.objects.filter(id=id).first()
             if not friend:
-                return Response(data={"message":"requested user does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(data={"message":"requested user does not exist", "type" : "failure"}, status=status.HTTP_400_BAD_REQUEST)
             userprofile = UserProfile.objects.get(user=request.user)
             userprofile.friends.add(friend)
             userprofile.save()
 
             response = {
                 "message" : "Added as Friend",
+                "type" : "success",
                 "data" : serializer.data
             }
             return Response(data=response, status=status.HTTP_200_OK)
@@ -58,7 +81,7 @@ class AddFriendApiView(APIView):
 
 class ListFriendsApiView(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = ListFriendsSerializer
+    serializer_class = FriendSerializer
 
     def get(self, request:Request, *args, **kwargs):
         userprofile = UserProfile.objects.get(user=request.user)
@@ -82,16 +105,17 @@ class DeleteFriendApiView(APIView):
         serializer = self.serializer_class(data=data)
 
         if serializer.is_valid():
-            friend = serializer.validated_data["friend"]
-            friend = User.objects.filter(username=friend).first()
+            id = serializer.validated_data["id"]
+            friend = User.objects.filter(id=id).first()
             if not friend:
-                return Response(data={"message":"requested user does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(data={"message":"requested user does not exist", "type" : "failure"}, status=status.HTTP_400_BAD_REQUEST)
             userprofile = UserProfile.objects.get(user=request.user)
             userprofile.friends.remove(friend)
             userprofile.save()
 
             response = {
                 "message" : "Friend Deleted",
+                "type" : "success",
                 "data" : serializer.data
             }
             return Response(data=response, status=status.HTTP_200_OK)
@@ -108,7 +132,9 @@ class PersonalIncomeListCreateView(GenericAPIView,
     permission_classes = [IsAuthenticated]
 
     serializer_class = PersonalIncomeSerializer
-    queryset = Personal_income.objects.all().order_by('-created_at')
+
+    def get_queryset(self):
+        return Personal_income.objects.all().order_by('-created_at').filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -129,7 +155,9 @@ class PersonalIncomeRetrieveUpdateDeleteView(
 
     permission_classes = [IsAuthenticated]
     serializer_class = PersonalIncomeSerializer
-    queryset = Personal_income.objects.all()
+
+    def get_queryset(self):
+        return Personal_income.objects.all().order_by('-created_at').filter(user=self.request.user)
 
     def get(self, request:Request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
@@ -150,7 +178,9 @@ class PersonalExpenseListCreateView(GenericAPIView,
     permission_classes = [IsAuthenticated]
 
     serializer_class = PersonalExpenseSerializer
-    queryset = Personal_expense.objects.all().order_by('-created_at')
+
+    def get_queryset(self):
+        return Personal_expense.objects.all().order_by('-created_at').filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -172,7 +202,9 @@ class PersonalExpenseRetrieveUpdateDeleteView(
     permission_classes = [IsAuthenticated]
 
     serializer_class = PersonalExpenseSerializer
-    queryset = Personal_expense.objects.all()
+
+    def get_queryset(self):
+        return Personal_expense.objects.all().order_by('-created_at').filter(user=self.request.user)
 
 
     def get(self, request:Request, *args, **kwargs):
@@ -184,5 +216,69 @@ class PersonalExpenseRetrieveUpdateDeleteView(
     def delete(self, request:Request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
+## categories 
+
+class CategoriesListView(GenericAPIView,
+    ListModelMixin,
+    ):
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+
+
+    def get(self, request:Request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+## personal Budget
+
+class PersonalBudgetApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+
+    def get(self, request:Request):
+        all_incomes = Personal_income.objects.filter(user=self.request.user)
+        all_expenses = Personal_expense.objects.filter(user=self.request.user)
+
+        total_income = sum([x.amount for x in all_incomes])
+        total_expense = sum([x.amount for x in all_expenses])
+        total_budget = total_income - total_expense
+
+        response = {
+            "total_income": total_income,
+            "total_expense": total_expense,
+            "total_budget": total_budget,
+        }
+        return Response(data=response, status=status.HTTP_200_OK)
+
+
+
 
 ## simple transaction
+
+
+
+
+## Split rooms
+
+
+class SplitRoomListCreateView(GenericAPIView,
+    ListModelMixin,
+    CreateModelMixin
+    ):
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = SplitRoomSerializer
+
+    # def get_queryset(self):
+    #     return SplitRoom.objects.all().order_by('-created_at').filter(splitters=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+        return super().perform_create(serializer)
+
+    # def get(self, request:Request, *args, **kwargs):
+    #     return self.list(request, *args, **kwargs)
+
+    def post(self, request:Request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
