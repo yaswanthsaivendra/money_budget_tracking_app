@@ -81,7 +81,7 @@ class AddFriendApiView(APIView):
 
 class ListFriendsApiView(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = FriendSerializer
+    serializer_class = UserSerializer
 
     def get(self, request:Request, *args, **kwargs):
         userprofile = UserProfile.objects.get(user=request.user)
