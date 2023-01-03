@@ -34,44 +34,60 @@ const Login = ({setAlert,setToken}) => {
     evt.preventDefault();
 
     let data =  loginFormDetails ;
-    const res = await axios.post("/auth/login/",data);
-    console.log(res)
-    if(res.status===200){
-      setAlert("successfully logged in","success") 
-      setToken(res.data.token)
+    try{
+      const res = await axios.post("/auth/login/",data);
+      console.log(res)
+      if(res.status===200){
+        setAlert("successfully logged in","success") 
+        setToken(res.data.token)
+        localStorage.setItem("token", res.data.token);
+      }
     }
-    localStorage.setItem("token", res.data.token);
+    catch(error){
+      console.log(error)
+      setAlert(error.response.data.message,"error")
+    }
+   
   };
 
   const registerSubmit = async (evt) => {
     evt.preventDefault();
+    if(registerFormDetails.password!==registerFormDetails.cpassword){
+      setAlert("passwords didn't match","error");
+      return
+    }
 
     let data = {
       username: registerFormDetails.username,
       password: registerFormDetails.password,
       email: registerFormDetails.email,
     };
-    const res = await axios.post("/auth/signup/",data);
-    console.log(res);
-    if(res.status===201){
-      console.log('hi')
-      setAlert("successfully registered, please login","success")
-      setOption("login")
-
+    try{
+      const res = await axios.post("/auth/signup/",data);
+      console.log(res);
+      if(res.status===201){
+        console.log('hi')
+        setAlert("successfully registered, please login","success")
+        setOption("login")
+  
+      }
     }
-    if(res.status===400){
-      setAlert("res.data.message","error");
+    catch(error){
+      console.log(error)
+      if(error.response.data.password){
+        setAlert(error.response.data.password[0],"error")
+      }
+      if(error.response.data.email){
+        setAlert(error.response.data.email[0],"error")
+      }
+      if(error.response.data.non_field_errors){
+        setAlert(error.response.data.non_field_errors[0],"error")
+      }
+        
     }
-    // fetch("https://pointy-gauge.glitch.me/api/form", {
-    //   method: "POST",
-    //   body: JSON.stringify(data),
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // })
-    //   .then((response) => response.json())
-    //   .then((response) => console.log("Success:", JSON.stringify(response)))
-    //   .catch((error) => console.error("Error:", error));
+    
+    
+   
   };
 
   return (
@@ -96,6 +112,7 @@ const Login = ({setAlert,setToken}) => {
                   name="username"
                   defaultValue={loginFormDetails.username}
                   onChange={loginHandleInput}
+                  required
                 />
 
                 <TextField
@@ -107,6 +124,7 @@ const Login = ({setAlert,setToken}) => {
                   name="password"
                   defaultValue={loginFormDetails.password}
                   onChange={loginHandleInput}
+                  required
                 />
                 <br />
                 <br />
@@ -153,16 +171,18 @@ const Login = ({setAlert,setToken}) => {
                   name="username"
                   defaultValue={registerFormDetails.username}
                   onChange={registerHandleInput}
+                  required
                 />
                 <TextField
                   style={{ margin: "10px 5px" }}
                   fullWidth
-                  type="text"
+                  type="email"
                   label="email"
                   variant="outlined"
                   name="email"
                   defaultValue={registerFormDetails.email}
                   onChange={registerHandleInput}
+                  required
                 />
 
                 <TextField
@@ -174,6 +194,7 @@ const Login = ({setAlert,setToken}) => {
                   name="password"
                   defaultValue={registerFormDetails.password}
                   onChange={registerHandleInput}
+                  required
                 />
                 <TextField
                   style={{ margin: "10px 5px" }}
@@ -184,6 +205,7 @@ const Login = ({setAlert,setToken}) => {
                   name="cpassword"
                   defaultValue={registerFormDetails.cpassword}
                   onChange={registerHandleInput}
+                  required
                 />
                 <br />
                 <br />

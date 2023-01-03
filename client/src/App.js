@@ -8,86 +8,106 @@ import Header from './components/Header/Header'
 import Debts from './components/Debts/Debts'
 import Splits from './components/Splits/Splits'
 import { useState, useEffect } from 'react'
-import Button from "@mui/material/Button"
-import  Snackbar  from '@mui/material/Snackbar'
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import * as React from 'react';
-import MuiAlert from '@mui/material/Alert';
-
+import Button from '@mui/material/Button'
+import Snackbar from '@mui/material/Snackbar'
+import IconButton from '@mui/material/IconButton'
+import CloseIcon from '@mui/icons-material/Close'
+import * as React from 'react'
+import MuiAlert from '@mui/material/Alert'
+import axios from './axios'
 
 function App() {
   const [login, setLogin] = useState(false)
-  const [token,setToken] = useState("")
+  const [token, setToken] = useState('')
+  const [friends, setFriends] = useState([])
+  const [users, setUsers] = useState([])
   useEffect(() => {
-    setToken(localStorage.getItem("token"))
+    setToken(localStorage.getItem('token'))
     const getUserInformation = async () => {
-      
-      //check whether the user is logged in or not
-      // try {
-      //     if(Cookies.get('token')){
-      //         userLogin(dispatch,true);
-      //         const userRole = await getUserRole()
-      //         const {role} = userRole.data.userData;
-      //         adminLogin(dispatch,role)
-      //         if(role==="user") {
-      //             const data = await GetUser();
-      //             userDetails(dispatch,data.profile)
-      //         }
-      //         // check for user role
-      //     }
-      // } catch (error) {
-      //     console.log(error.response.data.message)
-      // }
+      const res = await axios.get('/auth/login/', {
+        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+      })
+      if (res.status === 200) {
+        setLogin(true)
+      }
+      console.log(res)
+    }
+    const getUsers = async () => {
+      try {
+        const res = await axios.get('/splitter/list-users/', {
+          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+        })
+        setUsers(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    const getFriends = async () => {
+      try {
+        const res = await axios.get('/splitter/list-friends/', {
+          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+        })
+        setFriends(res.data)
+      } catch (err) {
+        console.log(err)
+      }
     }
 
-    // getUserInformation()
-    
-  }, [])
-  const [open, setOpen] = useState(false);
-  const [alertDetails,setAlertDetails]=useState({
-    message:"",
-    color:""
-  });
+    getUserInformation()
+    getUsers()
+    getFriends()
+  }, [token])
+  const [open, setOpen] = useState(false)
+  const [alertDetails, setAlertDetails] = useState({
+    message: '',
+    color: '',
+  })
 
-  const setAlert = (message,color) => {
-    setAlertDetails({message:message,color:color})
-    setOpen(true);
-  };
+  const setAlert = (message, color) => {
+    setAlertDetails({ message: message, color: color })
+    setOpen(true)
+  }
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
-      return;
+      return
     }
 
-    setOpen(false);
-  };
+    setOpen(false)
+  }
   const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
+  })
 
   return (
     <div className="App">
-       <div>
-      {/* <Button onClick={()=>{setAlert("bye","error")}}>Open simple snackbar</Button> */}
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={alertDetails.color} sx={{ width: '100%' }}>
-          {alertDetails.message}
-        </Alert>
-      </Snackbar>
-    </div>
+      <div>
+        {/* <Button onClick={()=>{setAlert("bye","error")}}>Open simple snackbar</Button> */}
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert
+            onClose={handleClose}
+            severity={alertDetails.color}
+            sx={{ width: '100%' }}
+          >
+            {alertDetails.message}
+          </Alert>
+        </Snackbar>
+      </div>
       <BrowserRouter>
         <Routes>
-          {token ? (
+          {login ? (
             <>
               <Route index element={<Dashboard />} />
               <Route path="transactions" element={<Transactions />} />
-              <Route path="friends" element={<Friends />} />
+              <Route path="friends" element={<Friends users={users}/>} />
               <Route path="debts" element={<Debts />} />
               <Route path="splits" element={<Splits />} />
             </>
           ) : (
-            <Route path="*" element={<Login setAlert={setAlert} setToken={setToken}/>} />
+            <Route
+              path="*"
+              element={<Login setAlert={setAlert} setToken={setToken} />}
+            />
           )}
         </Routes>
       </BrowserRouter>

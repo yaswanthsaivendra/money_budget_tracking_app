@@ -3,10 +3,10 @@ import Header from '../Header/Header'
 import Sidebar from '../../Sidebar'
 import Content from './Content'
 
-const Friends = () => {
+const Friends = ({users}) => {
   return (
     <>
-    <Sidebar title="Friends" content={<Content/>} />
+    <Sidebar title="Friends" content={<Content users={users}/>} />
     </>
   )
 }
