@@ -8,7 +8,7 @@ let url = "http://127.0.0.1:8000/";
 
 const client = axios.create({
   baseURL: url,
-  withCredentials:true
+  // withCredentials:true
 });
 
 export default client;

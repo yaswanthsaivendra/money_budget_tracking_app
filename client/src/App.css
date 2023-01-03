@@ -1,6 +1,15 @@
 p{
     margin-bottom:0 !important;
 }
+#message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+#inner-message {
+    margin: 0 auto;
+}
 .drawer{
 
  position:fixed;

@@ -6,7 +6,9 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "../../axios";
 import Cookies from "js-cookie";
-const Login = () => {
+
+
+const Login = ({setAlert,setToken}) => {
   const [option, setOption] = useState("login");
   const [loginFormDetails, setLoginFormDetails] = useState({
     username: "",
@@ -14,7 +16,7 @@ const Login = () => {
   });
   const [registerFormDetails, setRegisterFormDetails] = useState({
     username: "",
-    email:"",
+    email: "",
     password: "",
     cpassword: "",
   });
@@ -31,22 +33,35 @@ const Login = () => {
   const loginSubmit = async (evt) => {
     evt.preventDefault();
 
-    let data = { loginFormDetails };
-    const res = await axios.post("/login", data);
-    //set cookie
-    const { token } = data;
-    //setting up cookies
-    Cookies.set("token", token, { expires: 1, path: "/" });
-
-    localStorage.setItem("token", token);
-    
+    let data =  loginFormDetails ;
+    const res = await axios.post("/auth/login/",data);
+    console.log(res)
+    if(res.status===200){
+      setAlert("successfully logged in","success") 
+      setToken(res.data.token)
+    }
+    localStorage.setItem("token", res.data.token);
   };
+
   const registerSubmit = async (evt) => {
     evt.preventDefault();
 
-    let data = { registerFormDetails };
-    const res = await axios.post("/auth/signup")
-    console.log(res)
+    let data = {
+      username: registerFormDetails.username,
+      password: registerFormDetails.password,
+      email: registerFormDetails.email,
+    };
+    const res = await axios.post("/auth/signup/",data);
+    console.log(res);
+    if(res.status===201){
+      console.log('hi')
+      setAlert("successfully registered, please login","success")
+      setOption("login")
+
+    }
+    if(res.status===400){
+      setAlert("res.data.message","error");
+    }
     // fetch("https://pointy-gauge.glitch.me/api/form", {
     //   method: "POST",
     //   body: JSON.stringify(data),
@@ -82,7 +97,6 @@ const Login = () => {
                   defaultValue={loginFormDetails.username}
                   onChange={loginHandleInput}
                 />
-               
 
                 <TextField
                   style={{ margin: "10px 5px" }}
@@ -140,7 +154,7 @@ const Login = () => {
                   defaultValue={registerFormDetails.username}
                   onChange={registerHandleInput}
                 />
-                 <TextField
+                <TextField
                   style={{ margin: "10px 5px" }}
                   fullWidth
                   type="text"
