@@ -263,13 +263,10 @@ class PersonalBudgetApiView(APIView):
 
 
     def get(self, request:Request):
-        all_incomes = Personal_income.objects.filter(user=self.request.user)
-        all_expenses = Personal_expense.objects.filter(user=self.request.user)
-
-        total_income = sum([x.amount for x in all_incomes])
-        total_expense = sum([x.amount for x in all_expenses])
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        total_income = user_profile.income
+        total_expense = user_profile.expense
         total_budget = total_income - total_expense
-
         response = {
             "total_income": total_income,
             "total_expense": total_expense,
