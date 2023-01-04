@@ -12,10 +12,10 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useState } from "react-router-dom";
 import axios from "../../axios";
-
-
+import {useRef} from 'react'
 
 const Content = ({users,setAlert,setFriends,friends}) => {
+  const modalRef= useRef()
   const [friend, setFriend] = React.useState('');
   // add friend
   const friendSubmit = async (evt) =>{
@@ -26,6 +26,7 @@ const Content = ({users,setAlert,setFriends,friends}) => {
       })
       console.log(res)
       setAlert(res.data.message,"success")
+      
       //update friends list
       const getFriends = async () => {
         try {
@@ -52,6 +53,7 @@ const Content = ({users,setAlert,setFriends,friends}) => {
         headers: { Authorization: `Token ${localStorage.getItem('token')}` },
       })
       setAlert(res.data.message,"success")
+     
       //update friends list
       const getFriends = async () => {
         try {
@@ -152,7 +154,7 @@ const Content = ({users,setAlert,setFriends,friends}) => {
         id="exampleModal"
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+        aria-hidden="true" ref={modalRef}>
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">

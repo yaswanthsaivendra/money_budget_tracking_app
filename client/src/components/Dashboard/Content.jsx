@@ -10,21 +10,23 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import MenuItem from "@mui/material/MenuItem";
+import axios from "../../axios";
 
 // import Item from '@mui/material/Item';
+
 const Content = () => {
   const [expenseFormDetails, setExpenseFormDetails] = useState({
     amount: 0,
-    category: "Food",
+    category: "",
   });
   const [transferFormDetails, setTransferFormDetails] = useState({
     amount: 0,
-    friend: "Food",
-    category: "Food",
+    friend: "",
+    category: "",
   });
   const [incomeFormDetails, setIncomeFormDetails] = useState({
     amount: 0,
-    category: "Food",
+    category: "",
   });
 
   const expenseHandleInput = (evt) => {
@@ -74,40 +76,75 @@ const Content = () => {
       .then((response) => console.log("Success:", JSON.stringify(response)))
       .catch((error) => console.error("Error:", error));
   };
-  const incomeSubmit = (evt) => {
+  const incomeSubmit = async (evt) => {
     evt.preventDefault();
-
-    let data = { incomeFormDetails };
-
-    fetch("https://pointy-gauge.glitch.me/api/form", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => console.log("Success:", JSON.stringify(response)))
-      .catch((error) => console.error("Error:", error));
+    let data = incomeFormDetails;
+    try {
+      const res = await axios.post("/splitter/personal-income/", data, {
+        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+      });
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
   };
-  const categories = [
+  const expenseCategories = [
     {
-      value: "Food",
+      value: "entertainment",
+      label: "Entertainment",
+    },
+    {
+      value: "food",
       label: "Food",
     },
     {
-      value: "Travel",
-      label: "Travel",
+      value: "travelling",
+      label: "Travelling",
     },
     {
-      value: "BTC",
-      label: "฿",
+      value: "groceries",
+      label: "Groceries",
     },
     {
-      value: "JPY",
-      label: "¥",
+      value: "medical",
+      label: "Medical",
+    },
+    {
+      value: "education",
+      label: "Education",
+    },
+    {
+      value: "clothing",
+      label: "Clothing",
     },
   ];
+  const incomeCategories = [
+    {
+      value:"employment",
+      label:"Employment",
+    },
+    {
+      value:"investment",
+      label:"Investment",
+    },
+    {
+      value:"business",
+      label:"Business",
+    },
+    {
+      value:"rental",
+      label:"Rental",
+    },
+    {
+      value:"pension",
+      label:"Pension",
+    },
+    {
+      value:"royalties",
+      label:"Royalties",
+    },
+    
+  ]
   return (
     <div className="dashboard container content">
       <div className="details">
@@ -215,10 +252,9 @@ const Content = () => {
                 fullWidth
                 label="Select Category"
                 name="category"
-                defaultValue="Food"
+                defaultValue=""
                 onChange={expenseHandleInput}>
-                
-                {categories.map((option) => (
+                {expenseCategories.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
@@ -255,10 +291,9 @@ const Content = () => {
                 fullWidth
                 label="Transfer to"
                 name="friend"
-                defaultValue="Food"
+                defaultValue=""
                 onChange={transferHandleInput}>
-               
-                {categories.map((option) => (
+                {expenseCategories.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
@@ -271,10 +306,9 @@ const Content = () => {
                 fullWidth
                 label="Select Category"
                 name="category"
-                defaultValue="Food"
+                defaultValue=""
                 onChange={transferHandleInput}>
-                
-                {categories.map((option) => (
+                {expenseCategories.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
@@ -313,7 +347,7 @@ const Content = () => {
                 defaultValue={incomeFormDetails.category}
                 onChange={incomeHandleInput}>
                 {" "}
-                {categories.map((option) => (
+                {incomeCategories.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
