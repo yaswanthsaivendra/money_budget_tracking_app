@@ -1,17 +1,37 @@
 import React from "react";
 import Toolbar from "@mui/material/Toolbar";
-import { Typography } from "@mui/material";
+import { ListItemSecondaryAction, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import EastIcon from "@mui/icons-material/East";
 import WestIcon from "@mui/icons-material/West";
 import Chip from "@mui/material/Chip";
 import Transaction from "./Transaction";
-const Content = () => {
+import { useEffect,useState } from "react";
+
+const Content = ({ incomeTransactions,user }) => {
+//   const [incomeTransacationsCopy,setIncomeTransactionsCopy] = useState([])
+//   const incomeTransacationsDivs = () => {
+//     console.log(incomeTransacations)
+//     if (incomeTransacations) {
+//       return (
+//         <>
+//           {incomeTransacations.map((trans) => (
+//             <h1>heloo</h1>
+//           ))}
+//         </>
+//       );
+//     }
+//   };
+//  incomeTransacationsDivs()
+//  useEffect(()=>{
+//    setIncomeTransactionsCopy(incomeTransacations)
+//  },[])
+
   return (
     <div className="container">
       <div
         className="transactionsContainer  m-auto border rounded"
-        style={{ minHeight: "600px", maxWidth:"1100px" }}>
+        style={{ minHeight: "600px", maxWidth: "1100px" }}>
         <ul class="nav nav-tabs mt-2 mx-2" id="myTab" role="tablist">
           <li class="nav-item" role="presentation">
             <button
@@ -84,7 +104,7 @@ const Content = () => {
             id="profile"
             role="tabpanel"
             aria-labelledby="profile-tab">
-             <div
+            <div
               className="filters rounded w-100 mb-1"
               style={{ height: "60px" }}></div>
             <Divider />
@@ -107,10 +127,9 @@ const Content = () => {
             <Divider />
 
             <div className="transactions">
-              <Transaction type="income" />
-              <Transaction type="income" />
-              <Transaction type="income" />
-              <Transaction type="income" />
+             {incomeTransactions.map(item=>(
+              <Transaction type="income" amount={item.amount} category={item.category} date={item.created_at} user={user} />
+             ))}
             </div>
           </div>
         </div>

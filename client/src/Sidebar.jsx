@@ -75,7 +75,7 @@ function Sidebar(props) {
           </ListItem>
         </Link>
         <Link to="/friends">
-          <ListItem key="3" disablePadding>
+          <ListItem key="4" disablePadding>
             <ListItemButton>
               <ListItemIcon>
                 <GroupIcon />
@@ -85,7 +85,7 @@ function Sidebar(props) {
           </ListItem>
         </Link>
         <Link to="/splits">
-          <ListItem key="4" disablePadding>
+          <ListItem key="5" disablePadding>
             <ListItemButton>
               <ListItemIcon>
                 <PaidIcon/>
@@ -96,7 +96,7 @@ function Sidebar(props) {
         </Link>
       </List>
       <List>
-        <ListItem key="4" disablePadding>
+        <ListItem key="6" disablePadding>
           <ListItemButton>
             <ListItemIcon>
               <MailIcon />
@@ -104,7 +104,7 @@ function Sidebar(props) {
             <ListItemText primary={"Contact Us"} />
           </ListItemButton>
         </ListItem>
-        <ListItem key="4" disablePadding>
+        <ListItem key="7" disablePadding>
           <ListItemButton>
             <ListItemIcon>
               <InfoIcon />

@@ -16,17 +16,17 @@ import axios from "../../axios";
 
 const Content = () => {
   const [expenseFormDetails, setExpenseFormDetails] = useState({
-    amount: 0,
-    category: "",
+    expenseamount: "",
+    expensecategory: "",
   });
   const [transferFormDetails, setTransferFormDetails] = useState({
-    amount: 0,
-    friend: "",
-    category: "",
+    transferamount: "",
+    transferfriend: "",
+    transfercategory: "",
   });
   const [incomeFormDetails, setIncomeFormDetails] = useState({
-    amount: 0,
-    category: "",
+    incomeamount: "",
+    incomecategory: "",
   });
 
   const expenseHandleInput = (evt) => {
@@ -42,7 +42,7 @@ const Content = () => {
   const incomeHandleInput = (evt) => {
     const name = evt.target.name;
     const newValue = evt.target.value;
-    setIncomeFormDetails({ ...expenseFormDetails, [name]: newValue });
+    setIncomeFormDetails({ ...incomeFormDetails, [name]: newValue });
   };
   const expenseSubmit = (evt) => {
     evt.preventDefault();
@@ -78,7 +78,10 @@ const Content = () => {
   };
   const incomeSubmit = async (evt) => {
     evt.preventDefault();
-    let data = incomeFormDetails;
+    let data = {
+      amount:incomeFormDetails.incomeamount,
+      category:incomeFormDetails.incomecategory
+    };
     try {
       const res = await axios.post("/splitter/personal-income/", data, {
         headers: { Authorization: `Token ${localStorage.getItem("token")}` },
@@ -241,8 +244,8 @@ const Content = () => {
                 type="number"
                 label="amount"
                 variant="outlined"
-                name="amount"
-                defaultValue={expenseFormDetails.amount}
+                name="expenseamount"
+                defaultValue={expenseFormDetails.expenseamount}
                 onChange={expenseHandleInput}
               />
               <br />
@@ -251,7 +254,7 @@ const Content = () => {
                 style={{ margin: "5px" }}
                 fullWidth
                 label="Select Category"
-                name="category"
+                name="expensecategory"
                 defaultValue=""
                 onChange={expenseHandleInput}>
                 {expenseCategories.map((option) => (
@@ -280,8 +283,8 @@ const Content = () => {
                 type="number"
                 label="amount"
                 variant="outlined"
-                name="amount"
-                defaultValue={transferFormDetails.amount}
+                name="transferamount"
+                defaultValue={transferFormDetails.transferamount}
                 onChange={transferHandleInput}
               />
               <br />
@@ -290,7 +293,7 @@ const Content = () => {
                 style={{ margin: "5px" }}
                 fullWidth
                 label="Transfer to"
-                name="friend"
+                name="transferfriend"
                 defaultValue=""
                 onChange={transferHandleInput}>
                 {expenseCategories.map((option) => (
@@ -305,7 +308,7 @@ const Content = () => {
                 style={{ margin: "5px" }}
                 fullWidth
                 label="Select Category"
-                name="category"
+                name="transfercategory"
                 defaultValue=""
                 onChange={transferHandleInput}>
                 {expenseCategories.map((option) => (
@@ -333,8 +336,8 @@ const Content = () => {
                 type="number"
                 label="amount"
                 variant="outlined"
-                name="amount"
-                defaultValue={incomeFormDetails.amount}
+                name="incomeamount"
+                defaultValue={incomeFormDetails.incomeamount}
                 onChange={incomeHandleInput}
               />
               <br />
@@ -343,8 +346,8 @@ const Content = () => {
                 style={{ margin: "5px" }}
                 fullWidth
                 label="Transfer to"
-                name="category"
-                defaultValue={incomeFormDetails.category}
+                name="incomecategory"
+                defaultValue=""
                 onChange={incomeHandleInput}>
                 {" "}
                 {incomeCategories.map((option) => (

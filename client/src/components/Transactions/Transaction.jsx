@@ -4,7 +4,7 @@ import EastIcon from "@mui/icons-material/East";
 import WestIcon from "@mui/icons-material/West";
 import Chip from "@mui/material/Chip";
 
-const Transaction = ({ type, transaction }) => {
+const Transaction = ({ type, amount,category,date ,user}) => {
   return (
     <>
       {type == "expense" ? (
@@ -48,12 +48,12 @@ const Transaction = ({ type, transaction }) => {
           <div className="transaction px-3" style={{ height: "60px" }}>
             <div className="transactionFirst">
               <p className="text-secondary m-0 text-monospace">Dec 31</p>
-              <p className="px-1">neha</p>
+              <p className="px-1">{user.username}</p>
               <EastIcon fontSize="large" sx={{ color: "grey" }} />
-              <Chip label="travel" sx={{ m: 1 }} />
+              <Chip label={category} sx={{ m: 1 }} />
             </div>
             <div className="transactionSecond">
-              <p className="text-success">+490.00 USD</p>
+              <p className="text-success">+{amount} USD</p>
             </div>
           </div>
           <Divider />
