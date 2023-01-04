@@ -415,3 +415,46 @@ class SplitRoomRetrieveUpdateDeleteView(
 
     def delete(self, request:Request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+
+
+class PersonalIncomeListCreateView(GenericAPIView,
+    ListModelMixin,
+    CreateModelMixin
+    ):
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = PersonalIncomeSerializer
+
+    def get_queryset(self):
+        return Personal_income.objects.all().order_by('-created_at').filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        personal_income = serializer.save(user=self.request.user)
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        user_profile.income += personal_income.amount
+        user_profile.save(update_fields=['income'])
+        return super().perform_create(serializer)
+
+    def get(self, request:Request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request:Request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class GetSplitRoomTransactionsListView(GenericAPIView,
+    ListModelMixin,
+    ):
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = TransactionSerializer
+
+    def get_queryset(self):
+        return debt.objects.all().order_by('-created_at').filter(room=self.kwargs['id'])
+
+
+
+    def get(self, request:Request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
