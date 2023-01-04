@@ -7,7 +7,7 @@ from django.dispatch import receiver
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    friends = models.ManyToManyField(User, related_name='friend_profiles')
+    friends = models.ManyToManyField(User, related_name='friend_profiles', blank=True)
     income = models.PositiveBigIntegerField(default=0)
     expense = models.PositiveBigIntegerField(default=0)
 
@@ -67,25 +67,6 @@ class Personal_expense(models.Model):
         return f"{self.user} expense - {self.amount} under {self.category} category"
 
 
-class Simple_transaction(models.Model):
-    CATEGORY_CHOICES = [
-        ('food', 'Food'),
-        ('entertainment', 'Entertainment'),
-        ('travelling', 'Travelling'),
-        ('groceries', 'Groceries')
-    ]
-
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='simpletransaction_sender')
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='simpletransaction_reciever')
-    amount = models.PositiveIntegerField()
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    
-
-    def __str__(self) -> str:
-        return f"{self.sender.username} sending amount {self.amount} to {self.receiver.username} under {self.category} category"
-
 
 class SplitRoom(models.Model):
     CATEGORY_CHOICES = [
@@ -129,10 +110,11 @@ class debt(models.Model):
         ('royalties', 'Royalties')
     ]
     
-    room = models.ForeignKey(SplitRoom, on_delete=models.CASCADE, related_name='room_debts')
+    room = models.ForeignKey(SplitRoom, on_delete=models.CASCADE, related_name='room_debts', blank=True, null=True)
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transaction_sender')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transaction_receiver')
     amount = models.PositiveIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
     is_paid = models.BooleanField(default=False)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
 

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import (
     Personal_income,
     Personal_expense,
-    Simple_transaction,
+    debt,
     UserProfile,
     SplitRoom
 )
@@ -15,21 +15,24 @@ class PersonalIncomeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Personal_income
-        exclude = ['user']
+        fields = '__all__'
+        read_only_fields = ['user']
 
 class PersonalExpenseSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Personal_expense
-        exclude = ['user']
+        fields = '__all__'
+        read_only_fields = ['user']
 
-class SimpleTransactionSerializer(serializers.ModelSerializer):
+class TransactionSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
-        model = Simple_transaction
-        exclude = ['sender']
+        model = debt
+        fields = '__all__'
+        read_only_fields = ['sender']
 
 
 
