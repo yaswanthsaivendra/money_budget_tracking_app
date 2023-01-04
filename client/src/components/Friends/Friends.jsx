@@ -3,10 +3,10 @@ import Header from '../Header/Header'
 import Sidebar from '../../Sidebar'
 import Content from './Content'
 
-const Friends = ({users}) => {
+const Friends = ({users,setAlert,setFriends,friends}) => {
   return (
     <>
-    <Sidebar title="Friends" content={<Content users={users}/>} />
+    <Sidebar title="Friends" content={<Content users={users} setAlert={setAlert} setFriends={setFriends} friends={friends}/>} />
     </>
   )
 }

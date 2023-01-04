@@ -11,39 +11,91 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useState } from "react-router-dom";
-const Content = () => {
+import axios from "../../axios";
+
+
+
+const Content = ({users,setAlert,setFriends,friends}) => {
   const [friend, setFriend] = React.useState('');
-  // handle friend submit
-  const friendSubmit = (evt) => {
+  // add friend
+  const friendSubmit = async (evt) =>{
     evt.preventDefault();
-
-    let data = { friend };
-
-    fetch("https://pointy-gauge.glitch.me/api/form", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => console.log("Success:", JSON.stringify(response)))
-      .catch((error) => console.error("Error:", error));
-  };
+    try {
+      const res = await axios.post('/splitter/add-friend/', {id:friend.value},{
+        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+      })
+      console.log(res)
+      setAlert(res.data.message,"success")
+      //update friends list
+      const getFriends = async () => {
+        try {
+          const res = await axios.get('/splitter/list-friends/', {
+            headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+          })
+          setFriends(res.data)
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      getFriends()
   
-  function createData(id, name, email) {
-    return { id, name, email };
+    } catch (err) {
+      console.log(err)
+      setAlert("something went wrong","error")
+      
+    }
+  };
+  //delete frnd
+  const deleteFriend =async(id)=>{
+    try {
+      const res = await axios.post('/splitter/delete-friend/', {id:id},{
+        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+      })
+      setAlert(res.data.message,"success")
+      //update friends list
+      const getFriends = async () => {
+        try {
+          const res = await axios.get('/splitter/list-friends/', {
+            headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+          })
+          setFriends(res.data)
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      getFriends()
+  
+    } catch (err) {
+      console.log(err)
+      setAlert("something went wrong","error")
+      
+    }
+
   }
-  const rows = [
-    createData(1, "Neha", "nehadeekonda9849@gmail.com"),
-    createData(2, "Rachana", "rachana@gmail.com"),
-    createData(3, "karishma", "nehadeekonda9849@gmail.com"),
-    createData(4, "Neha", "kyathi@gmail.com"),
-  ];
-  const usersList = [
-    { label: "Neha", value: "Neha" },
-    { label: "The Godfather", value: "god father" },
-  ];
+  
+  function createData(id, name, email,userid) {
+    return { id, name, email ,userid};
+  }
+  const rows = []
+  friends.forEach((frnd,id)=>{
+    rows.push(createData(id+1,frnd.username,frnd.email,frnd.id))
+  })
+  const usersList =[]
+  users.forEach((user)=>{
+    let friendBool=false
+     friends.forEach((frnd)=>{
+      if(frnd.id===user.id){
+        friendBool = true
+      }
+     })
+     if(!friendBool){
+      usersList.push({label:user.username,value:user.id})
+     }
+   
+  })
+
+
+
   return (
     <div class="container">
       <div
@@ -84,7 +136,7 @@ const Content = () => {
                       <TableCell align="right">{row.name}</TableCell>
                       <TableCell align="right">{row.email}</TableCell>
                       <TableCell align="right">
-                        <Button variant="outlined">Delete</Button>
+                        <Button variant="outlined" onClick={()=>{deleteFriend(row.userid)}}>Delete</Button>
                       </TableCell>
                     </TableRow>
                   ))}

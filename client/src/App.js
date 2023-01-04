@@ -21,8 +21,13 @@ function App() {
   const [token, setToken] = useState('')
   const [friends, setFriends] = useState([])
   const [users, setUsers] = useState([])
+  const [incomeTransactions,setIncomeTransactions] = useState([])
+  const [categories, setCategories] = useState([])
+
+
   useEffect(() => {
     setToken(localStorage.getItem('token'))
+    //get user info
     const getUserInformation = async () => {
       const res = await axios.get('/auth/login/', {
         headers: { Authorization: `Token ${localStorage.getItem('token')}` },
@@ -32,6 +37,7 @@ function App() {
       }
       console.log(res)
     }
+    //get users
     const getUsers = async () => {
       try {
         const res = await axios.get('/splitter/list-users/', {
@@ -42,6 +48,7 @@ function App() {
         console.log(err)
       }
     }
+    //get friends
     const getFriends = async () => {
       try {
         const res = await axios.get('/splitter/list-friends/', {
@@ -52,11 +59,40 @@ function App() {
         console.log(err)
       }
     }
+    //get categories
+    const getCategories = async () => {
+      try {
+        const res = await axios.get('/splitter/categories/', {
+          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+        })
+        setCategories(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    //get income transactions
+    const getIncomeTransactions = async () => {
+      try {
+        const res = await axios.get('/splitter/personal-income/', {
+          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+        })
+        setIncomeTransactions(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    
 
     getUserInformation()
     getUsers()
     getFriends()
+    getCategories()
+    getIncomeTransactions() 
+    
   }, [token])
+
+
+
   const [open, setOpen] = useState(false)
   const [alertDetails, setAlertDetails] = useState({
     message: '',
@@ -97,9 +133,10 @@ function App() {
         <Routes>
           {login ? (
             <>
-              <Route index element={<Dashboard />} />
+              <Route index element={<Dashboard setAlert={setAlert} categories={categories}/>} />
+              {/* <Route index element={<Splits/>} /> */}
               <Route path="transactions" element={<Transactions />} />
-              <Route path="friends" element={<Friends users={users}/>} />
+              <Route path="friends" element={<Friends users={users} setAlert={setAlert} setFriends={setFriends} friends={friends}/>} />
               <Route path="debts" element={<Debts />} />
               <Route path="splits" element={<Splits />} />
             </>
