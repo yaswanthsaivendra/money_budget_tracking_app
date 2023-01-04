@@ -11,15 +11,15 @@ const Transaction = ({ type, amount,category,date ,user}) => {
     <>
       {type == "expense" ? (
         <>
-          <div className="transaction px-3" style={{ height: "60px" }}>
+          <div className="transaction px-3" style={{ minHeight: "60px" }}>
             <div className="transactionFirst">
-              <p className="text-secondary m-0 text-monospace">Dec 31</p>
-              <p className="px-1">neha</p>
-              <WestIcon fontSize="large" sx={{ color: "grey" }} />
-              <Chip label="travel" sx={{  m: 1 }} />
+              <p className="text-secondary m-0 text-monospace">{formattedDate}</p>
+              <p className="px-1">{user.username}</p>
+              <EastIcon fontSize="large" sx={{ color: "grey" }} />
+              <Chip label={category} sx={{  m: 1 }} />
             </div>
             <div className="transactionSecond">
-              <p className="text-danger">-90.00 USD</p>
+              <p className="text-danger">-{amount} USD</p>
             </div>
           </div>
           <Divider />
@@ -29,8 +29,9 @@ const Transaction = ({ type, amount,category,date ,user}) => {
       )}
        {type == "transfer" ? (
         <>
-          <div className="transaction px-3" style={{ height: "60px" }}>
+          <div className="transaction px-3" style={{ minHeight: "60px" }}>
             <div className="transactionFirst">
+              
               <p className="text-secondary m-0 text-monospace">Dec 31</p>
               <p className="px-1">neha</p>
               <EastIcon fontSize="large" sx={{ color: "grey" }} />
@@ -47,11 +48,11 @@ const Transaction = ({ type, amount,category,date ,user}) => {
       )}
         {type == "income" ? (
         <>
-          <div className="transaction px-3" style={{ height: "60px" }}>
+          <div className="transaction px-3" style={{ minHeight: "60px" }}>
             <div className="transactionFirst">
               <p className="text-secondary m-0 text-monospace">{formattedDate}</p>
               <p className="px-1">{user.username}</p>
-              <EastIcon fontSize="large" sx={{ color: "grey" }} />
+              <WestIcon fontSize="large" sx={{ color: "grey" }} />
               <Chip label={category} sx={{ m: 1 }} />
             </div>
             <div className="transactionSecond">

@@ -8,24 +8,8 @@ import Chip from "@mui/material/Chip";
 import Transaction from "./Transaction";
 import { useEffect,useState } from "react";
 
-const Content = ({ incomeTransactions,user }) => {
-//   const [incomeTransacationsCopy,setIncomeTransactionsCopy] = useState([])
-//   const incomeTransacationsDivs = () => {
-//     console.log(incomeTransacations)
-//     if (incomeTransacations) {
-//       return (
-//         <>
-//           {incomeTransacations.map((trans) => (
-//             <h1>heloo</h1>
-//           ))}
-//         </>
-//       );
-//     }
-//   };
-//  incomeTransacationsDivs()
-//  useEffect(()=>{
-//    setIncomeTransactionsCopy(incomeTransacations)
-//  },[])
+const Content = ({ incomeTransactions,user,expenseTransactions }) => {
+
 
   return (
     <div className="container">
@@ -85,18 +69,9 @@ const Content = ({ incomeTransactions,user }) => {
             <Divider />
 
             <div className="transactions">
-              <Transaction type="expense" />
-              <Transaction type="expense" />
-              <Transaction type="expense" />
-              <Transaction type="expense" />
-              <Transaction type="expense" />
-              <Transaction type="expense" />
-              <Transaction type="expense" />
-              <Transaction type="expense" />
-              <Transaction type="expense" />
-              <Transaction type="expense" />
-              <Transaction type="expense" />
-              <Transaction type="expense" />
+            {expenseTransactions.map(item=>(
+              <Transaction type="expense" amount={item.amount} category={item.category} date={item.created_at} user={user} />
+             ))}
             </div>
           </div>
           <div

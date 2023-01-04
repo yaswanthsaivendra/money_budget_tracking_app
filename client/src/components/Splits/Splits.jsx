@@ -1,8 +1,10 @@
 import React from 'react'
+import Sidebar from '../../Sidebar'
+import Content from './Content'
 
 const Slipts = () => {
   return (
-    <div>Slipts</div>
+    <Sidebar title="Splits" content={<Content/>}/>
   )
 }
 

@@ -14,7 +14,13 @@ import axios from "../../axios";
 
 // import Item from '@mui/material/Item';
 
-const Content = ({setIncomeTransactions,setAlert,setExpenseTransactions}) => {
+const Content = ({
+  setIncomeTransactions,
+  setAlert,
+  setExpenseTransactions,
+  budget,
+  setBudget,
+}) => {
   const [expenseFormDetails, setExpenseFormDetails] = useState({
     expenseamount: "",
     expensecategory: "",
@@ -47,8 +53,8 @@ const Content = ({setIncomeTransactions,setAlert,setExpenseTransactions}) => {
   const expenseSubmit = async (evt) => {
     evt.preventDefault();
     let data = {
-      amount:expenseFormDetails.expenseamount,
-      category:expenseFormDetails.expensecategory
+      amount: expenseFormDetails.expenseamount,
+      category: expenseFormDetails.expensecategory,
     };
     console.log(data);
     try {
@@ -56,25 +62,40 @@ const Content = ({setIncomeTransactions,setAlert,setExpenseTransactions}) => {
         headers: { Authorization: `Token ${localStorage.getItem("token")}` },
       });
       console.log(res);
-      if(res.status===201){
-        setAlert("expense successfully added","success")
-        setExpenseFormDetails({expenseamount:"",expensecategory:"",})
+      if (res.status === 201) {
+        setAlert("expense successfully added", "success");
+        setExpenseFormDetails({ expenseamount: "", expensecategory: "" });
       }
       //update transactions
       //get income transactions
-     
-    const getExpenseTransactions = async () => {
-      try {
-        const res = await axios.get('/splitter/personal-expense/', {
-          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
-        })
-        setExpenseTransactions(res.data)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    getExpenseTransactions()
 
+      const getExpenseTransactions = async () => {
+        try {
+          const res = await axios.get("/splitter/personal-expense/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          setExpenseTransactions(res.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getExpenseTransactions();
+      //get budget
+      const getBudget = async () => {
+        try {
+          const res = await axios.get("/splitter/personal-budget/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          setBudget(res.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getBudget();
     } catch (err) {
       console.log(err);
     }
@@ -82,33 +103,34 @@ const Content = ({setIncomeTransactions,setAlert,setExpenseTransactions}) => {
   const transferSubmit = async (evt) => {
     evt.preventDefault();
     let data = {
-      amount:transferFormDetails.incomeamount,
-      category:transferFormDetails.incomecategory
+      amount: transferFormDetails.incomeamount,
+      category: transferFormDetails.incomecategory,
     };
     try {
       const res = await axios.post("/splitter/personal-expense/", data, {
         headers: { Authorization: `Token ${localStorage.getItem("token")}` },
       });
       console.log(res);
-      if(res.status===201){
-        setAlert("expense successfully added","success")
-        setExpenseFormDetails({expenseamount:"",expensecategory:"",})
+      if (res.status === 201) {
+        setAlert("expense successfully added", "success");
+        setExpenseFormDetails({ expenseamount: "", expensecategory: "" });
       }
       //update transactions
       //get income transactions
-     
-    const getExpenseTransactions = async () => {
-      try {
-        const res = await axios.get('/splitter/personal-expense/', {
-          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
-        })
-        setExpenseTransactions(res.data)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    getExpenseTransactions()
 
+      const getExpenseTransactions = async () => {
+        try {
+          const res = await axios.get("/splitter/personal-expense/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          setExpenseTransactions(res.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getExpenseTransactions();
     } catch (err) {
       console.log(err);
     }
@@ -116,33 +138,48 @@ const Content = ({setIncomeTransactions,setAlert,setExpenseTransactions}) => {
   const incomeSubmit = async (evt) => {
     evt.preventDefault();
     let data = {
-      amount:incomeFormDetails.incomeamount,
-      category:incomeFormDetails.incomecategory
+      amount: incomeFormDetails.incomeamount,
+      category: incomeFormDetails.incomecategory,
     };
     try {
       const res = await axios.post("/splitter/personal-income/", data, {
         headers: { Authorization: `Token ${localStorage.getItem("token")}` },
       });
       console.log(res);
-      if(res.status===201){
-        setAlert("income successfully added","success")
-        setIncomeFormDetails({incomeamount:"",incomecategory:"",})
+      if (res.status === 201) {
+        setAlert("income successfully added", "success");
+        setIncomeFormDetails({ incomeamount: "", incomecategory: "" });
       }
       //update transactions
       //get income transactions
-     
-    const getIncomeTransactions = async () => {
-      try {
-        const res = await axios.get('/splitter/personal-income/', {
-          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
-        })
-        setIncomeTransactions(res.data)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    getIncomeTransactions()
 
+      const getIncomeTransactions = async () => {
+        try {
+          const res = await axios.get("/splitter/personal-income/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          setIncomeTransactions(res.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getIncomeTransactions();
+      //get budget
+      const getBudget = async () => {
+        try {
+          const res = await axios.get("/splitter/personal-budget/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          setBudget(res.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getBudget();
     } catch (err) {
       console.log(err);
     }
@@ -179,31 +216,30 @@ const Content = ({setIncomeTransactions,setAlert,setExpenseTransactions}) => {
   ];
   const incomeCategories = [
     {
-      value:"employment",
-      label:"Employment",
+      value: "employment",
+      label: "Employment",
     },
     {
-      value:"investment",
-      label:"Investment",
+      value: "investment",
+      label: "Investment",
     },
     {
-      value:"business",
-      label:"Business",
+      value: "business",
+      label: "Business",
     },
     {
-      value:"rental",
-      label:"Rental",
+      value: "rental",
+      label: "Rental",
     },
     {
-      value:"pension",
-      label:"Pension",
+      value: "pension",
+      label: "Pension",
     },
     {
-      value:"royalties",
-      label:"Royalties",
+      value: "royalties",
+      label: "Royalties",
     },
-    
-  ]
+  ];
   return (
     <div className="dashboard container content">
       <div className="details">
@@ -218,7 +254,7 @@ const Content = ({setIncomeTransactions,setAlert,setExpenseTransactions}) => {
               </Typography>
             </td>
             <td>
-              <p className="m-2">3000</p>
+              <p className="m-2">{budget.total_budget}</p>
             </td>
           </tr>
           <tr>
@@ -226,7 +262,7 @@ const Content = ({setIncomeTransactions,setAlert,setExpenseTransactions}) => {
               <p className="m-2">Income:</p>
             </td>
             <td className="text-success">
-              <p className="m-2">9449</p>
+              <p className="m-2">{budget.total_income}</p>
             </td>
           </tr>
           <tr>
@@ -234,7 +270,7 @@ const Content = ({setIncomeTransactions,setAlert,setExpenseTransactions}) => {
               <p className="m-2">Exprenses:</p>
             </td>
             <td className="text-danger">
-              <p className="m-2">300</p>
+              <p className="m-2">{budget.total_expense}</p>
             </td>
           </tr>
         </table>
@@ -314,8 +350,7 @@ const Content = ({setIncomeTransactions,setAlert,setExpenseTransactions}) => {
                 name="expensecategory"
                 defaultValue=""
                 onChange={expenseHandleInput}
-                value={expenseFormDetails.expensecategory}
-                >
+                value={expenseFormDetails.expensecategory}>
                 {expenseCategories.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
@@ -405,7 +440,7 @@ const Content = ({setIncomeTransactions,setAlert,setExpenseTransactions}) => {
                 select
                 style={{ margin: "5px" }}
                 fullWidth
-                label="Transfer to"
+                label="category"
                 name="incomecategory"
                 defaultValue=""
                 value={incomeFormDetails.incomecategory}
