@@ -138,7 +138,8 @@ class PersonalIncomeListCreateView(GenericAPIView,
     def perform_create(self, serializer):
         personal_income = serializer.save(user=self.request.user)
         user_profile = UserProfile.objects.get(user=self.request.user)
-        
+        user_profile.income += personal_income.amount
+        user_profile.save(update_fields=['income'])
         return super().perform_create(serializer)
 
     def get(self, request:Request, *args, **kwargs):
@@ -163,8 +164,24 @@ class PersonalIncomeRetrieveUpdateDeleteView(
     def get(self, request:Request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
+    def perform_update(self, serializer):
+        old_income = self.get_object().amount
+        updated_income = serializer.save()
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        user_profile.income -= old_income
+        user_profile.income += updated_income.amount
+        user_profile.save(update_fields=['income'])
+        return super().perform_update(serializer)
+
     def put(self, request:Request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
+
+    def perform_destroy(self, instance):
+        income = instance.amount
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        user_profile.income -= income
+        user_profile.save(update_fields=['income'])
+        return super().perform_destroy(instance)
 
     def delete(self, request:Request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
@@ -182,9 +199,13 @@ class PersonalExpenseListCreateView(GenericAPIView,
 
     def get_queryset(self):
         return Personal_expense.objects.all().order_by('-created_at').filter(user=self.request.user)
+    
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        personal_expense = serializer.save(user=self.request.user)
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        user_profile.expense += personal_expense.amount
+        user_profile.save(update_fields=['expense'])
         return super().perform_create(serializer)
 
     def get(self, request:Request, *args, **kwargs):
@@ -211,8 +232,24 @@ class PersonalExpenseRetrieveUpdateDeleteView(
     def get(self, request:Request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
+    def perform_update(self, serializer):
+        old_expense = self.get_object().amount
+        updated_expense = serializer.save()
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        user_profile.expense -= old_expense
+        user_profile.expense += updated_expense.amount
+        user_profile.save(update_fields=['expense'])
+        return super().perform_update(serializer)
+
     def put(self, request:Request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
+
+    def perform_destroy(self, instance):
+        expense = instance.amount
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        user_profile.expense -= expense
+        user_profile.save(update_fields=['expense'])
+        return super().perform_destroy(instance)
 
     def delete(self, request:Request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
