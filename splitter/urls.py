@@ -7,7 +7,6 @@ from .views import (
     AddFriendApiView,
     ListFriendsApiView,
     DeleteFriendApiView,
-    CategoriesListView,
     PersonalBudgetApiView,
     SplitRoomListCreateView,
     AllUsersListView,
@@ -24,8 +23,6 @@ urlpatterns = [
     path("list-friends/", ListFriendsApiView.as_view()),
     path("add-friend/", AddFriendApiView.as_view()),
     path("delete-friend/", DeleteFriendApiView.as_view()),
-    # Categories
-    path("categories/", CategoriesListView.as_view()),
     # Personal Budget
     path("personal-budget/", PersonalBudgetApiView.as_view()),
     # Split Rooms

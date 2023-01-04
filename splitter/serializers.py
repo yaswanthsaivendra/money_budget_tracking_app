@@ -4,7 +4,6 @@ from .models import (
     Personal_expense,
     Simple_transaction,
     UserProfile,
-    Category, 
     SplitRoom
 )
 from django.contrib.auth.models import User
@@ -45,12 +44,6 @@ class UserSerializer(serializers.ModelSerializer):
 class FriendSerializer(serializers.Serializer):
     id = serializers.IntegerField()
 
-class CategorySerializer(serializers.ModelSerializer):
-    title = serializers.ReadOnlyField()
-
-    class Meta:
-        model = Category
-        fields = '__all__'
 
 class SplitRoomSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)

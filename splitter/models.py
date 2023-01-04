@@ -20,18 +20,19 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 
 
-class Category(models.Model):
-    title = models.CharField(max_length=15)
-
-    def __str__(self) -> str:
-        return self.title
-
 
 
 class Personal_income(models.Model):
+    CATEGORY_CHOICES = [
+        ('food', 'Food'),
+        ('entertainment', 'Entertainment'),
+        ('travelling', 'Travelling'),
+        ('groceries', 'Groceries')
+    ]
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.PositiveIntegerField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
 
     
@@ -41,9 +42,16 @@ class Personal_income(models.Model):
 
     
 class Personal_expense(models.Model):
+    CATEGORY_CHOICES = [
+        ('food', 'Food'),
+        ('entertainment', 'Entertainment'),
+        ('travelling', 'Travelling'),
+        ('groceries', 'Groceries')
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.PositiveIntegerField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
 
     
@@ -53,10 +61,17 @@ class Personal_expense(models.Model):
 
 
 class Simple_transaction(models.Model):
+    CATEGORY_CHOICES = [
+        ('food', 'Food'),
+        ('entertainment', 'Entertainment'),
+        ('travelling', 'Travelling'),
+        ('groceries', 'Groceries')
+    ]
+
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='simpletransaction_sender')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='simpletransaction_reciever')
     amount = models.PositiveIntegerField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
 
     
@@ -66,6 +81,13 @@ class Simple_transaction(models.Model):
 
 
 class SplitRoom(models.Model):
+    CATEGORY_CHOICES = [
+        ('food', 'Food'),
+        ('entertainment', 'Entertainment'),
+        ('travelling', 'Travelling'),
+        ('groceries', 'Groceries')
+    ]
+
     name = models.CharField(max_length=40)
     amount = models.PositiveIntegerField()
     description = models.TextField()
@@ -73,17 +95,27 @@ class SplitRoom(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="creator_splitroom")
     payer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="payer_splitroom")
     splitters = models.ManyToManyField(User, related_name='member_splitrooms')
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
 
     def __str__(self) -> str:
         return f"Room - {self.name} with split amount {self.amount}"
 
     
 class debt(models.Model):
+    CATEGORY_CHOICES = [
+        ('food', 'Food'),
+        ('entertainment', 'Entertainment'),
+        ('travelling', 'Travelling'),
+        ('groceries', 'Groceries')
+    ]
+    
     room = models.ForeignKey(SplitRoom, on_delete=models.CASCADE, related_name='room_debts')
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transaction_sender')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transaction_receiver')
     amount = models.PositiveIntegerField()
     is_paid = models.BooleanField(default=False)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+
 
     def __str__(self) -> str:
         return f"{self.sender} paying to {self.receiver} in room {self.room.name}"

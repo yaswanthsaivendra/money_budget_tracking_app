@@ -17,7 +17,6 @@ from .serializers import (
     PersonalIncomeSerializer,
     SimpleTransactionSerializer,
     FriendSerializer,
-    CategorySerializer,
     SplitRoomSerializer,
     UserSerializer
 )
@@ -26,7 +25,6 @@ from .models import (
     Personal_income,
     Simple_transaction,
     UserProfile,
-    Category,
     SplitRoom,
     debt
 )
@@ -217,19 +215,7 @@ class PersonalExpenseRetrieveUpdateDeleteView(
     def delete(self, request:Request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
-## categories 
 
-class CategoriesListView(GenericAPIView,
-    ListModelMixin,
-    ):
-    permission_classes = [IsAuthenticated]
-
-    serializer_class = CategorySerializer
-    queryset = Category.objects.all()
-
-
-    def get(self, request:Request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
 ## personal Budget
 
