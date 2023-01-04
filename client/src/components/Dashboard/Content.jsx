@@ -14,7 +14,7 @@ import axios from "../../axios";
 
 // import Item from '@mui/material/Item';
 
-const Content = () => {
+const Content = ({setIncomeTransactions,setAlert,setExpenseTransactions}) => {
   const [expenseFormDetails, setExpenseFormDetails] = useState({
     expenseamount: "",
     expensecategory: "",
@@ -44,37 +44,74 @@ const Content = () => {
     const newValue = evt.target.value;
     setIncomeFormDetails({ ...incomeFormDetails, [name]: newValue });
   };
-  const expenseSubmit = (evt) => {
+  const expenseSubmit = async (evt) => {
     evt.preventDefault();
+    let data = {
+      amount:expenseFormDetails.expenseamount,
+      category:expenseFormDetails.expensecategory
+    };
+    console.log(data);
+    try {
+      const res = await axios.post("/splitter/personal-expense/", data, {
+        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+      });
+      console.log(res);
+      if(res.status===201){
+        setAlert("expense successfully added","success")
+        setExpenseFormDetails({expenseamount:"",expensecategory:"",})
+      }
+      //update transactions
+      //get income transactions
+     
+    const getExpenseTransactions = async () => {
+      try {
+        const res = await axios.get('/splitter/personal-expense/', {
+          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+        })
+        setExpenseTransactions(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getExpenseTransactions()
 
-    let data = { expenseFormDetails };
-
-    fetch("https://pointy-gauge.glitch.me/api/form", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => console.log("Success:", JSON.stringify(response)))
-      .catch((error) => console.error("Error:", error));
+    } catch (err) {
+      console.log(err);
+    }
   };
-  const transferSubmit = (evt) => {
+  const transferSubmit = async (evt) => {
     evt.preventDefault();
+    let data = {
+      amount:transferFormDetails.incomeamount,
+      category:transferFormDetails.incomecategory
+    };
+    try {
+      const res = await axios.post("/splitter/personal-expense/", data, {
+        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+      });
+      console.log(res);
+      if(res.status===201){
+        setAlert("expense successfully added","success")
+        setExpenseFormDetails({expenseamount:"",expensecategory:"",})
+      }
+      //update transactions
+      //get income transactions
+     
+    const getExpenseTransactions = async () => {
+      try {
+        const res = await axios.get('/splitter/personal-expense/', {
+          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+        })
+        setExpenseTransactions(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getExpenseTransactions()
 
-    let data = { transferFormDetails };
-
-    fetch("https://pointy-gauge.glitch.me/api/form", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => console.log("Success:", JSON.stringify(response)))
-      .catch((error) => console.error("Error:", error));
+    } catch (err) {
+      console.log(err);
+    }
   };
   const incomeSubmit = async (evt) => {
     evt.preventDefault();
@@ -87,6 +124,25 @@ const Content = () => {
         headers: { Authorization: `Token ${localStorage.getItem("token")}` },
       });
       console.log(res);
+      if(res.status===201){
+        setAlert("income successfully added","success")
+        setIncomeFormDetails({incomeamount:"",incomecategory:"",})
+      }
+      //update transactions
+      //get income transactions
+     
+    const getIncomeTransactions = async () => {
+      try {
+        const res = await axios.get('/splitter/personal-income/', {
+          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+        })
+        setIncomeTransactions(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getIncomeTransactions()
+
     } catch (err) {
       console.log(err);
     }
@@ -246,6 +302,7 @@ const Content = () => {
                 variant="outlined"
                 name="expenseamount"
                 defaultValue={expenseFormDetails.expenseamount}
+                value={expenseFormDetails.expenseamount}
                 onChange={expenseHandleInput}
               />
               <br />
@@ -256,7 +313,9 @@ const Content = () => {
                 label="Select Category"
                 name="expensecategory"
                 defaultValue=""
-                onChange={expenseHandleInput}>
+                onChange={expenseHandleInput}
+                value={expenseFormDetails.expensecategory}
+                >
                 {expenseCategories.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
@@ -338,6 +397,7 @@ const Content = () => {
                 variant="outlined"
                 name="incomeamount"
                 defaultValue={incomeFormDetails.incomeamount}
+                value={incomeFormDetails.incomeamount}
                 onChange={incomeHandleInput}
               />
               <br />
@@ -348,6 +408,7 @@ const Content = () => {
                 label="Transfer to"
                 name="incomecategory"
                 defaultValue=""
+                value={incomeFormDetails.incomecategory}
                 onChange={incomeHandleInput}>
                 {" "}
                 {incomeCategories.map((option) => (

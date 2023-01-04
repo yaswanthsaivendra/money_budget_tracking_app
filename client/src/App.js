@@ -24,6 +24,7 @@ function App() {
   const [incomeTransactions,setIncomeTransactions] = useState([])
   const [categories, setCategories] = useState([])
   const [user,setUser] = useState({})
+  const [expenseTransactions,setExpenseTransactions] = useState([])
 
 
   useEffect(() => {
@@ -73,12 +74,23 @@ function App() {
         console.log(err)
       }
     }
-    
+    //get expense transactions
+    const getExpenseTransactions = async () => {
+      try {
+        const res = await axios.get('/splitter/personal-expense/', {
+          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+        })
+        setExpenseTransactions(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
 
     getUserInformation()
     getUsers()
     getFriends()
-    getIncomeTransactions() 
+    getIncomeTransactions()
+    getExpenseTransactions() 
     
   }, [token])
 
@@ -124,7 +136,7 @@ function App() {
         <Routes>
           {login ? (
             <>
-              <Route index element={<Dashboard setAlert={setAlert} categories={categories} user={user}/>} />
+              <Route index element={<Dashboard setAlert={setAlert} categories={categories} user={user} setIncomeTransactions={setIncomeTransactions} setExpenseTransactions={setExpenseTransactions}/>} />
               {/* <Route index element={<Splits/>} /> */}
               <Route path="transactions" element={<Transactions incomeTransactions={incomeTransactions} user={user}/>} />
               <Route path="friends" element={<Friends users={users} setAlert={setAlert} setFriends={setFriends} friends={friends}/>} />
