@@ -352,8 +352,12 @@ class SplitRoomListCreateView(GenericAPIView,
 
     serializer_class = SplitRoomSerializer
 
-    # def get_queryset(self):
-    #     return SplitRoom.objects.all().order_by('-created_at').filter(splitters=self.request.user)
+    def get_queryset(self):
+        queryset1 = SplitRoom.objects.all().filter(splitters=self.request.user)
+        queryset2 = SplitRoom.objects.all().filter(creator=self.request.user)
+        queryset3 = SplitRoom.objects.all().filter(payer=self.request.user)
+        queryset = queryset1.union(queryset2).union(queryset3)
+        return queryset.order_by('-created_at')
 
     def perform_create(self, serializer):
         splitroom = serializer.save(creator=self.request.user)
@@ -367,8 +371,8 @@ class SplitRoomListCreateView(GenericAPIView,
         return super().perform_create(serializer)
 
 
-    # def get(self, request:Request, *args, **kwargs):
-    #     return self.list(request, *args, **kwargs)
+    def get(self, request:Request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
     def post(self, request:Request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
@@ -415,3 +419,46 @@ class SplitRoomRetrieveUpdateDeleteView(
 
     def delete(self, request:Request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+
+
+class PersonalIncomeListCreateView(GenericAPIView,
+    ListModelMixin,
+    CreateModelMixin
+    ):
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = PersonalIncomeSerializer
+
+    def get_queryset(self):
+        return Personal_income.objects.all().order_by('-created_at').filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        personal_income = serializer.save(user=self.request.user)
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        user_profile.income += personal_income.amount
+        user_profile.save(update_fields=['income'])
+        return super().perform_create(serializer)
+
+    def get(self, request:Request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request:Request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class GetSplitRoomTransactionsListView(GenericAPIView,
+    ListModelMixin,
+    ):
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = TransactionSerializer
+
+    def get_queryset(self):
+        return debt.objects.all().order_by('-created_at').filter(room=self.kwargs['id'])
+
+
+
+    def get(self, request:Request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)

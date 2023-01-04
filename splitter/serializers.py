@@ -53,5 +53,6 @@ class SplitRoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SplitRoom
-        exclude = ['creator']
+        fields = '__all__'
+        read_only_fields = ['creator']
         

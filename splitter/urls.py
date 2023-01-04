@@ -13,6 +13,7 @@ from .views import (
     SplitRoomRetrieveUpdateDeleteView,
     TransactionListCreateView, 
     TransactionRetrieveUpdateDeleteView,
+    GetSplitRoomTransactionsListView
 )
 
 urlpatterns = [
@@ -30,6 +31,7 @@ urlpatterns = [
     # Split Rooms
     path("splitroom/", SplitRoomListCreateView.as_view() ),
     path("splitroom/<int:pk>/", SplitRoomRetrieveUpdateDeleteView.as_view() ),
+    path("splitroom-transactions/<int:id>/", GetSplitRoomTransactionsListView.as_view() ),
     # all users 
     path("list-users/", AllUsersListView.as_view() ),
     # Transactions
