@@ -8,6 +8,8 @@ from django.dispatch import receiver
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     friends = models.ManyToManyField(User, related_name='friend_profiles')
+    income = models.PositiveBigIntegerField(default=0)
+    expense = models.PositiveBigIntegerField(default=0)
 
     def __str__(self) -> str:
         return self.user.username
@@ -24,10 +26,12 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 class Personal_income(models.Model):
     CATEGORY_CHOICES = [
-        ('food', 'Food'),
-        ('entertainment', 'Entertainment'),
-        ('travelling', 'Travelling'),
-        ('groceries', 'Groceries')
+        ('employment', 'Employment'),
+        ('investment', 'Investment'),
+        ('business', 'Business'),
+        ('rental', 'Rental'),
+        ('pension', 'Pension'),
+        ('royalties', 'Royalties')
     ]
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -46,7 +50,10 @@ class Personal_expense(models.Model):
         ('food', 'Food'),
         ('entertainment', 'Entertainment'),
         ('travelling', 'Travelling'),
-        ('groceries', 'Groceries')
+        ('groceries', 'Groceries'),
+        ('medical', 'Medical'),
+        ('education', 'Education'),
+        ('clothing', 'Clothing')
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -82,10 +89,13 @@ class Simple_transaction(models.Model):
 
 class SplitRoom(models.Model):
     CATEGORY_CHOICES = [
-        ('food', 'Food'),
+       ('food', 'Food'),
         ('entertainment', 'Entertainment'),
         ('travelling', 'Travelling'),
-        ('groceries', 'Groceries')
+        ('groceries', 'Groceries'),
+        ('medical', 'Medical'),
+        ('education', 'Education'),
+        ('clothing', 'Clothing')
     ]
 
     name = models.CharField(max_length=40)
@@ -106,7 +116,17 @@ class debt(models.Model):
         ('food', 'Food'),
         ('entertainment', 'Entertainment'),
         ('travelling', 'Travelling'),
-        ('groceries', 'Groceries')
+        ('groceries', 'Groceries'),
+        ('medical', 'Medical'),
+        ('education', 'Education'),
+        ('clothing', 'Clothing'),
+
+        ('employment', 'Employment'),
+        ('investment', 'Investment'),
+        ('business', 'Business'),
+        ('rental', 'Rental'),
+        ('pension', 'Pension'),
+        ('royalties', 'Royalties')
     ]
     
     room = models.ForeignKey(SplitRoom, on_delete=models.CASCADE, related_name='room_debts')

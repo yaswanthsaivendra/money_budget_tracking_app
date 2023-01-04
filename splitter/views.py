@@ -136,7 +136,9 @@ class PersonalIncomeListCreateView(GenericAPIView,
         return Personal_income.objects.all().order_by('-created_at').filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        personal_income = serializer.save(user=self.request.user)
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        
         return super().perform_create(serializer)
 
     def get(self, request:Request, *args, **kwargs):
