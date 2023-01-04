@@ -15,7 +15,7 @@ from rest_framework.mixins import (
 from .serializers import (
     PersonalExpenseSerializer,
     PersonalIncomeSerializer,
-    SimpleTransactionSerializer,
+    TransactionSerializer,
     FriendSerializer,
     SplitRoomSerializer,
     UserSerializer
@@ -23,7 +23,6 @@ from .serializers import (
 from .models import (
     Personal_expense,
     Personal_income,
-    Simple_transaction,
     UserProfile,
     SplitRoom,
     debt
@@ -280,9 +279,69 @@ class PersonalBudgetApiView(APIView):
 ## simple transaction
 
 
+class TransactionListCreateView(GenericAPIView,
+    ListModelMixin,
+    CreateModelMixin
+    ):
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = TransactionSerializer
+
+    def get_queryset(self):
+        queryset1 = debt.objects.all().filter(sender=self.request.user)
+        queryset2 = debt.objects.all().filter(receiver=self.request.user)
+        queryset = queryset1.union(queryset2)
+        return queryset.order_by('-created_at')
+
+    def perform_create(self, serializer):
+        transaction_obj = serializer.save(sender=self.request.user)
+        sender = UserProfile.objects.get(user=transaction_obj.sender)
+        receiver = UserProfile.objects.get(user=transaction_obj.receiver)
+        sender.income -= transaction_obj.amount
+        receiver.income += transaction_obj.amount
+        sender.save(update_fields=['income'])
+        receiver.save(update_fields=['income'])
+        return super().perform_create(serializer)
+
+    def get(self, request:Request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request:Request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class TransactionRetrieveUpdateDeleteView(
+    GenericAPIView,
+    UpdateModelMixin,
+    ):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = TransactionSerializer
+
+    def get_queryset(self):
+        return debt.objects.filter(sender=self.request.user)
+
+
+    def perform_update(self, serializer):
+        transaction_obj = serializer.save()
+        sender = UserProfile.objects.get(user=transaction_obj.sender)
+        receiver = UserProfile.objects.get(user=transaction_obj.receiver)
+        sender.income -= transaction_obj.amount
+        receiver.income += transaction_obj.amount
+        sender.save(update_fields=['income'])
+        receiver.save(update_fields=['income'])
+        return super().perform_update(serializer)
+
+
+    def put(self, request:Request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+
 
 
 ## Split rooms
+
+
 
 
 class SplitRoomListCreateView(GenericAPIView,
@@ -304,7 +363,7 @@ class SplitRoomListCreateView(GenericAPIView,
             if splitter == payer :
                 pass
             else :
-                debt.objects.create(room = splitroom, receiver=payer, sender=splitter, amount=int(splitroom.amount)/len(splitters))
+                debt.objects.create(room = splitroom, receiver= splitroom.payer, sender=splitter, amount=int(splitroom.amount)/len(splitters), category=splitroom.category)
         return super().perform_create(serializer)
 
 
@@ -339,7 +398,7 @@ class SplitRoomRetrieveUpdateDeleteView(
             if splitter == payer :
                 pass
             else :
-                debt.objects.create(room = updated_splitroom, receiver=payer, sender=splitter, amount=int(updated_splitroom.amount)/len(splitters))
+                debt.objects.create(room = updated_splitroom, receiver=payer, sender=splitter, amount=int(updated_splitroom.amount)/len(splitters), category=updated_splitroom.category)
         return super().perform_update(serializer)
 
 

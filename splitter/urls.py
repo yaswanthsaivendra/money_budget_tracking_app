@@ -11,6 +11,8 @@ from .views import (
     SplitRoomListCreateView,
     AllUsersListView,
     SplitRoomRetrieveUpdateDeleteView,
+    TransactionListCreateView, 
+    TransactionRetrieveUpdateDeleteView,
 )
 
 urlpatterns = [
@@ -30,5 +32,10 @@ urlpatterns = [
     path("splitroom/<int:pk>/", SplitRoomRetrieveUpdateDeleteView.as_view() ),
     # all users 
     path("list-users/", AllUsersListView.as_view() ),
+    # Transactions
+    path("transactions/", TransactionListCreateView.as_view()),
+    path("transactions/<int:pk>/", TransactionRetrieveUpdateDeleteView.as_view()),
+
+
 
 ]
