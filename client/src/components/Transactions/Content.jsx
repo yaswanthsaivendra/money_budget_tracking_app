@@ -6,11 +6,15 @@ import EastIcon from "@mui/icons-material/East";
 import WestIcon from "@mui/icons-material/West";
 import Chip from "@mui/material/Chip";
 import Transaction from "./Transaction";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 
-const Content = ({ incomeTransactions,user,expenseTransactions }) => {
-
-
+const Content = ({
+  incomeTransactions,
+  user,
+  expenseTransactions,
+  transferTransactions,
+  users,
+}) => {
   return (
     <div className="container">
       <div
@@ -57,6 +61,7 @@ const Content = ({ incomeTransactions,user,expenseTransactions }) => {
             </button>
           </li>
         </ul>
+        {/* expense transactions */}
         <div class="tab-content" id="myTabContent">
           <div
             class="tab-pane fade show active"
@@ -69,11 +74,20 @@ const Content = ({ incomeTransactions,user,expenseTransactions }) => {
             <Divider />
 
             <div className="transactions">
-            {expenseTransactions.map(item=>(
-              <Transaction type="expense" amount={item.amount} category={item.category} date={item.created_at} user={user} />
-             ))}
+              {expenseTransactions.length ===0 ? <p className="text-secondary p-5 text-center">Nothing to show</p>:<></>}
+              {expenseTransactions.map((item) => (
+                <Transaction
+                  type="expense"
+                  amount={item.amount}
+                  category={item.category}
+                  date={item.created_at}
+                  user={user}
+                  users={users}
+                />
+              ))}
             </div>
           </div>
+          {/* transfer transactions */}
           <div
             class="tab-pane fade"
             id="profile"
@@ -85,12 +99,22 @@ const Content = ({ incomeTransactions,user,expenseTransactions }) => {
             <Divider />
 
             <div className="transactions">
-              <Transaction type="transfer" />
-              <Transaction type="transfer" />
-              <Transaction type="transfer" />
-              <Transaction type="transfer" />
+            {transferTransactions.length ===0 ? <p className="text-secondary p-5 text-center">Nothing to show</p>:<></>}
+              {transferTransactions.map((item) => (
+                <Transaction
+                  type="transfer"
+                  amount={item.amount}
+                  category={item.category}
+                  date={item.created_at}
+                  user={user}
+                  sender={item.sender}
+                  receiver={item.receiver}
+                  users={users}
+                />
+              ))}
             </div>
           </div>
+          {/* income transactions */}
           <div
             class="tab-pane fade"
             id="contact"
@@ -102,9 +126,17 @@ const Content = ({ incomeTransactions,user,expenseTransactions }) => {
             <Divider />
 
             <div className="transactions">
-             {incomeTransactions.map(item=>(
-              <Transaction type="income" amount={item.amount} category={item.category} date={item.created_at} user={user} />
-             ))}
+            {incomeTransactions.length ===0 ? <p className="text-secondary p-5 text-center">Nothing to show</p>:<></>}
+              {incomeTransactions.map((item) => (
+                <Transaction
+                  type="income"
+                  amount={item.amount}
+                  category={item.category}
+                  date={item.created_at}
+                  user={user}
+                  users={users}
+                />
+              ))}
             </div>
           </div>
         </div>

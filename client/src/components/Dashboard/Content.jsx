@@ -18,8 +18,11 @@ const Content = ({
   setIncomeTransactions,
   setAlert,
   setExpenseTransactions,
+  setTransferTransactions,
   budget,
   setBudget,
+  users,
+  user
 }) => {
   const [expenseFormDetails, setExpenseFormDetails] = useState({
     expenseamount: "",
@@ -50,6 +53,8 @@ const Content = ({
     const newValue = evt.target.value;
     setIncomeFormDetails({ ...incomeFormDetails, [name]: newValue });
   };
+
+  // expense submit
   const expenseSubmit = async (evt) => {
     evt.preventDefault();
     let data = {
@@ -66,9 +71,7 @@ const Content = ({
         setAlert("expense successfully added", "success");
         setExpenseFormDetails({ expenseamount: "", expensecategory: "" });
       }
-      //update transactions
       //get income transactions
-
       const getExpenseTransactions = async () => {
         try {
           const res = await axios.get("/splitter/personal-expense/", {
@@ -100,41 +103,60 @@ const Content = ({
       console.log(err);
     }
   };
+
+  //transfer submit
   const transferSubmit = async (evt) => {
     evt.preventDefault();
     let data = {
-      amount: transferFormDetails.incomeamount,
-      category: transferFormDetails.incomecategory,
+      amount: transferFormDetails.transferamount,
+      category: transferFormDetails.transfercategory,
+      receiver:transferFormDetails.transferfriend,
+      is_paid:true
     };
+    console.log(data);
     try {
-      const res = await axios.post("/splitter/personal-expense/", data, {
+      const res = await axios.post("/splitter/transactions/", data, {
         headers: { Authorization: `Token ${localStorage.getItem("token")}` },
       });
       console.log(res);
       if (res.status === 201) {
-        setAlert("expense successfully added", "success");
-        setExpenseFormDetails({ expenseamount: "", expensecategory: "" });
+        setAlert("transfer successful", "success");
+        setTransferFormDetails({ transferamount: "", transfercategory: "" });
       }
-      //update transactions
-      //get income transactions
-
-      const getExpenseTransactions = async () => {
+      //get transfer transactions
+      const getTransferTransactions = async () => {
         try {
-          const res = await axios.get("/splitter/personal-expense/", {
+          const res = await axios.get("/splitter/transactions/", {
             headers: {
               Authorization: `Token ${localStorage.getItem("token")}`,
             },
           });
-          setExpenseTransactions(res.data);
+          setTransferTransactions(res.data);
         } catch (err) {
           console.log(err);
         }
       };
-      getExpenseTransactions();
+      getTransferTransactions();
+      //get budget
+      const getBudget = async () => {
+        try {
+          const res = await axios.get("/splitter/personal-budget/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          setBudget(res.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getBudget();
     } catch (err) {
       console.log(err);
     }
   };
+
+  //income submit
   const incomeSubmit = async (evt) => {
     evt.preventDefault();
     let data = {
@@ -150,9 +172,7 @@ const Content = ({
         setAlert("income successfully added", "success");
         setIncomeFormDetails({ incomeamount: "", incomecategory: "" });
       }
-      //update transactions
       //get income transactions
-
       const getIncomeTransactions = async () => {
         try {
           const res = await axios.get("/splitter/personal-income/", {
@@ -240,6 +260,13 @@ const Content = ({
       label: "Royalties",
     },
   ];
+  const transferFriends = [];
+  users.map((item)=>{
+    if(user.id!==item.id){
+      transferFriends.push({value:item.id,label:item.username})
+    }
+   
+  })
   return (
     <div className="dashboard container content">
       <div className="details">
@@ -379,6 +406,7 @@ const Content = ({
                 variant="outlined"
                 name="transferamount"
                 defaultValue={transferFormDetails.transferamount}
+                value={transferFormDetails.transferamount}
                 onChange={transferHandleInput}
               />
               <br />
@@ -389,8 +417,9 @@ const Content = ({
                 label="Transfer to"
                 name="transferfriend"
                 defaultValue=""
+                value={transferFormDetails.transferfriend}
                 onChange={transferHandleInput}>
-                {expenseCategories.map((option) => (
+                {transferFriends.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
@@ -404,6 +433,7 @@ const Content = ({
                 label="Select Category"
                 name="transfercategory"
                 defaultValue=""
+                value={transferFormDetails.transfercategory}
                 onChange={transferHandleInput}>
                 {expenseCategories.map((option) => (
                   <MenuItem key={option.value} value={option.value}>

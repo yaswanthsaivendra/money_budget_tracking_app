@@ -15,18 +15,20 @@ import CloseIcon from '@mui/icons-material/Close'
 import * as React from 'react'
 import MuiAlert from '@mui/material/Alert'
 import axios from './axios'
+import Split from './components/Split/Split'
 
 function App() {
   const [login, setLogin] = useState(false)
   const [token, setToken] = useState('')
   const [friends, setFriends] = useState([])
   const [users, setUsers] = useState([])
-  const [incomeTransactions,setIncomeTransactions] = useState([])
+  const [incomeTransactions, setIncomeTransactions] = useState([])
   const [categories, setCategories] = useState([])
-  const [user,setUser] = useState({})
-  const [expenseTransactions,setExpenseTransactions] = useState([])
-  const [budget,setBudget] = useState({})
-
+  const [user, setUser] = useState({})
+  const [expenseTransactions, setExpenseTransactions] = useState([])
+  const [budget, setBudget] = useState({})
+  const [transferTransactions, setTransferTransactions] = useState([])
+  const [splits, setSplits] = useState([])
 
   useEffect(() => {
     setToken(localStorage.getItem('token'))
@@ -63,7 +65,7 @@ function App() {
         console.log(err)
       }
     }
-    
+
     //get income transactions
     const getIncomeTransactions = async () => {
       try {
@@ -86,6 +88,17 @@ function App() {
         console.log(err)
       }
     }
+    //get transfer transactions
+    const getTransferTransactions = async () => {
+      try {
+        const res = await axios.get('/splitter/transactions/', {
+          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+        })
+        setTransferTransactions(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
     //get budget
     const getBudget = async () => {
       try {
@@ -97,17 +110,28 @@ function App() {
         console.log(err)
       }
     }
+    //get splits
+    const getSplits = async () => {
+      try {
+        const res = await axios.get('/splitter/splitroom/', {
+          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+        })
+        console.log(res)
+        setSplits(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
 
     getUserInformation()
     getUsers()
     getFriends()
     getIncomeTransactions()
-    getExpenseTransactions() 
+    getExpenseTransactions()
+    getTransferTransactions()
     getBudget()
-    
+    getSplits()
   }, [token])
-
-
 
   const [open, setOpen] = useState(false)
   const [alertDetails, setAlertDetails] = useState({
@@ -149,11 +173,59 @@ function App() {
         <Routes>
           {login ? (
             <>
-              <Route index element={<Dashboard budget={budget} setAlert={setAlert} categories={categories} user={user} setIncomeTransactions={setIncomeTransactions} setExpenseTransactions={setExpenseTransactions} setBudget={setBudget}/>} />
-              <Route path="transactions" element={<Transactions incomeTransactions={incomeTransactions} expenseTransactions={expenseTransactions} user={user}/>} />
-              <Route path="friends" element={<Friends users={users} setAlert={setAlert} setFriends={setFriends} friends={friends}/>} />
+            {/* Dashboard */}
+              <Route
+                index
+                element={
+                  <Dashboard
+                    budget={budget}
+                    setAlert={setAlert}
+                    categories={categories}
+                    user={user}
+                    setIncomeTransactions={setIncomeTransactions}
+                    setExpenseTransactions={setExpenseTransactions}
+                    setTransferTransactions={setTransferTransactions}
+                    setBudget={setBudget}
+                    users={users}
+                  />
+                }
+              />
+              {/* transactions */}
+              <Route
+                path="transactions"
+                element={
+                  <Transactions
+                    incomeTransactions={incomeTransactions}
+                    expenseTransactions={expenseTransactions}
+                    user={user}
+                    transferTransactions={transferTransactions}
+                    users={users}
+                  />
+                }
+              />
+              {/* friends */}
+              <Route
+                path="friends"
+                element={
+                  <Friends
+                    users={users}
+                    setAlert={setAlert}
+                    setFriends={setFriends}
+                    friends={friends}
+                    user={user}
+                  />
+                }
+              />
+              {/* debts */}
               <Route path="debts" element={<Debts />} />
-              <Route path="splits" element={<Splits />} />
+              {/* splits */}
+              <Route
+                path="splits"
+                element={
+                  <Splits friends={friends} setAlert={setAlert} user={user} splits={splits} setSplits={setSplits} />
+                }
+              />
+              <Route path="splits/*" element={<Split/>} />
             </>
           ) : (
             <Route

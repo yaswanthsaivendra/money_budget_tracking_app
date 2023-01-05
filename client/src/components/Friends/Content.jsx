@@ -12,108 +12,113 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useState } from "react-router-dom";
 import axios from "../../axios";
-import {useRef} from 'react'
+import { useRef } from "react";
 
-const Content = ({users,setAlert,setFriends,friends}) => {
-  const modalRef= useRef()
-  const [friend, setFriend] = React.useState('');
+const Content = ({ users, setAlert, setFriends, friends, user }) => {
+  const modalRef = useRef();
+  const [friend, setFriend] = React.useState("");
   // add friend
-  const friendSubmit = async (evt) =>{
+  const friendSubmit = async (evt) => {
     evt.preventDefault();
     try {
-      const res = await axios.post('/splitter/add-friend/', {id:friend.value},{
-        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
-      })
-      console.log(res)
-      setAlert(res.data.message,"success")
-      
+      const res = await axios.post(
+        "/splitter/add-friend/",
+        { id: friend.value },
+        {
+          headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+        }
+      );
+      console.log(res);
+      setAlert(res.data.message, "success");
+
       //update friends list
       const getFriends = async () => {
         try {
-          const res = await axios.get('/splitter/list-friends/', {
-            headers: { Authorization: `Token ${localStorage.getItem('token')}` },
-          })
-          setFriends(res.data)
+          const res = await axios.get("/splitter/list-friends/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          setFriends(res.data);
         } catch (err) {
-          console.log(err)
+          console.log(err);
         }
-      }
-      getFriends()
-  
+      };
+      getFriends();
     } catch (err) {
-      console.log(err)
-      setAlert("something went wrong","error")
-      
+      console.log(err);
+      setAlert("something went wrong", "error");
     }
   };
   //delete frnd
-  const deleteFriend =async(id)=>{
+  const deleteFriend = async (id) => {
     try {
-      const res = await axios.post('/splitter/delete-friend/', {id:id},{
-        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
-      })
-      setAlert(res.data.message,"success")
-     
+      const res = await axios.post(
+        "/splitter/delete-friend/",
+        { id: id },
+        {
+          headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+        }
+      );
+      setAlert(res.data.message, "success");
+
       //update friends list
       const getFriends = async () => {
         try {
-          const res = await axios.get('/splitter/list-friends/', {
-            headers: { Authorization: `Token ${localStorage.getItem('token')}` },
-          })
-          setFriends(res.data)
+          const res = await axios.get("/splitter/list-friends/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          setFriends(res.data);
         } catch (err) {
-          console.log(err)
+          console.log(err);
         }
-      }
-      getFriends()
-  
+      };
+      getFriends();
     } catch (err) {
-      console.log(err)
-      setAlert("something went wrong","error")
-      
+      console.log(err);
+      setAlert("something went wrong", "error");
     }
+  };
 
+  function createData(id, name, email, userid) {
+    return { id, name, email, userid };
   }
-  
-  function createData(id, name, email,userid) {
-    return { id, name, email ,userid};
-  }
-  const rows = []
-  friends.forEach((frnd,id)=>{
-    rows.push(createData(id+1,frnd.username,frnd.email,frnd.id))
-  })
-  const usersList =[]
-  users.forEach((user)=>{
-    let friendBool=false
-     friends.forEach((frnd)=>{
-      if(frnd.id===user.id){
-        friendBool = true
+  const rows = [];
+  friends.forEach((frnd, id) => {
+    rows.push(createData(id + 1, frnd.username, frnd.email, frnd.id));
+  });
+  const usersList = [];
+  users.forEach((item) => {
+    if (item.id != user.id) {
+      let friendBool = false;
+      friends.forEach((frnd) => {
+        if (frnd.id === item.id) {
+          friendBool = true;
+        }
+      });
+      if (!friendBool) {
+        usersList.push({ label: item.username, value: item.id });
       }
-     })
-     if(!friendBool){
-      usersList.push({label:user.username,value:user.id})
-     }
-   
-  })
-
-
+    }
+  });
 
   return (
     <div class="container">
       <div
         className="friendsContainer border rounded p-3 py-5 m-auto text-start"
         style={{ maxWidth: "1100px", minHeight: "600px" }}>
-        
         <div className="d-flex justify-content-between pb-3">
-        <h5 className="mx-5">Your Friends:</h5>
-          <div className="mx-5" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            <Button variant="contained" >
-              Add Friend
-            </Button>
+          <h5 className="mx-5">Your Friends</h5>
+          <div
+            className="mx-5"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal">
+            <Button variant="contained">Add Friend</Button>
           </div>
         </div>
         <div className="friends">
-         
           <div className="border rounded mx-5 my-3">
             <TableContainer>
               <Table aria-label="simple table">
@@ -138,7 +143,13 @@ const Content = ({users,setAlert,setFriends,friends}) => {
                       <TableCell align="right">{row.name}</TableCell>
                       <TableCell align="right">{row.email}</TableCell>
                       <TableCell align="right">
-                        <Button variant="outlined" onClick={()=>{deleteFriend(row.userid)}}>Delete</Button>
+                        <Button
+                          variant="outlined"
+                          onClick={() => {
+                            deleteFriend(row.userid);
+                          }}>
+                          Delete
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -154,7 +165,8 @@ const Content = ({users,setAlert,setFriends,friends}) => {
         id="exampleModal"
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
-        aria-hidden="true" ref={modalRef}>
+        aria-hidden="true"
+        ref={modalRef}>
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
@@ -173,8 +185,9 @@ const Content = ({users,setAlert,setFriends,friends}) => {
                 id="combo-box-demo"
                 options={usersList}
                 value={friend}
-                onChange={(e,val)=>{setFriend(val);}}
-                
+                onChange={(e, val) => {
+                  setFriend(val);
+                }}
                 renderInput={(params) => (
                   <TextField {...params} label="Choose a user" />
                 )}
@@ -187,7 +200,9 @@ const Content = ({users,setAlert,setFriends,friends}) => {
                 data-bs-dismiss="modal">
                 Close
               </button>
-              <Button variant="contained" onClick={friendSubmit}>Submit</Button>
+              <Button variant="contained" onClick={friendSubmit}>
+                Submit
+              </Button>
             </div>
           </div>
         </div>
