@@ -225,7 +225,7 @@ function App() {
                   <Splits friends={friends} setAlert={setAlert} user={user} splits={splits} setSplits={setSplits} />
                 }
               />
-              <Route path="splits/*" element={<Split/>} />
+              <Route path="splits/*" element={<Split splits={splits} setAlert={setAlert} user={user}/>} />
             </>
           ) : (
             <Route
