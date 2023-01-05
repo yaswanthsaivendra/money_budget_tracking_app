@@ -10,21 +10,29 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import MenuItem from "@mui/material/MenuItem";
+import axios from "../../axios";
 
 // import Item from '@mui/material/Item';
-const Content = () => {
+
+const Content = ({
+  setIncomeTransactions,
+  setAlert,
+  setExpenseTransactions,
+  budget,
+  setBudget,
+}) => {
   const [expenseFormDetails, setExpenseFormDetails] = useState({
-    amount: 0,
-    category: "Food",
+    expenseamount: "",
+    expensecategory: "",
   });
   const [transferFormDetails, setTransferFormDetails] = useState({
-    amount: 0,
-    friend: "Food",
-    category: "Food",
+    transferamount: "",
+    transferfriend: "",
+    transfercategory: "",
   });
   const [incomeFormDetails, setIncomeFormDetails] = useState({
-    amount: 0,
-    category: "Food",
+    incomeamount: "",
+    incomecategory: "",
   });
 
   const expenseHandleInput = (evt) => {
@@ -40,72 +48,196 @@ const Content = () => {
   const incomeHandleInput = (evt) => {
     const name = evt.target.name;
     const newValue = evt.target.value;
-    setIncomeFormDetails({ ...expenseFormDetails, [name]: newValue });
+    setIncomeFormDetails({ ...incomeFormDetails, [name]: newValue });
   };
-  const expenseSubmit = (evt) => {
+  const expenseSubmit = async (evt) => {
     evt.preventDefault();
+    let data = {
+      amount: expenseFormDetails.expenseamount,
+      category: expenseFormDetails.expensecategory,
+    };
+    console.log(data);
+    try {
+      const res = await axios.post("/splitter/personal-expense/", data, {
+        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+      });
+      console.log(res);
+      if (res.status === 201) {
+        setAlert("expense successfully added", "success");
+        setExpenseFormDetails({ expenseamount: "", expensecategory: "" });
+      }
+      //update transactions
+      //get income transactions
 
-    let data = { expenseFormDetails };
-
-    fetch("https://pointy-gauge.glitch.me/api/form", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => console.log("Success:", JSON.stringify(response)))
-      .catch((error) => console.error("Error:", error));
+      const getExpenseTransactions = async () => {
+        try {
+          const res = await axios.get("/splitter/personal-expense/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          setExpenseTransactions(res.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getExpenseTransactions();
+      //get budget
+      const getBudget = async () => {
+        try {
+          const res = await axios.get("/splitter/personal-budget/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          setBudget(res.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getBudget();
+    } catch (err) {
+      console.log(err);
+    }
   };
-  const transferSubmit = (evt) => {
+  const transferSubmit = async (evt) => {
     evt.preventDefault();
+    let data = {
+      amount: transferFormDetails.incomeamount,
+      category: transferFormDetails.incomecategory,
+    };
+    try {
+      const res = await axios.post("/splitter/personal-expense/", data, {
+        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+      });
+      console.log(res);
+      if (res.status === 201) {
+        setAlert("expense successfully added", "success");
+        setExpenseFormDetails({ expenseamount: "", expensecategory: "" });
+      }
+      //update transactions
+      //get income transactions
 
-    let data = { transferFormDetails };
-
-    fetch("https://pointy-gauge.glitch.me/api/form", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => console.log("Success:", JSON.stringify(response)))
-      .catch((error) => console.error("Error:", error));
+      const getExpenseTransactions = async () => {
+        try {
+          const res = await axios.get("/splitter/personal-expense/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          setExpenseTransactions(res.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getExpenseTransactions();
+    } catch (err) {
+      console.log(err);
+    }
   };
-  const incomeSubmit = (evt) => {
+  const incomeSubmit = async (evt) => {
     evt.preventDefault();
+    let data = {
+      amount: incomeFormDetails.incomeamount,
+      category: incomeFormDetails.incomecategory,
+    };
+    try {
+      const res = await axios.post("/splitter/personal-income/", data, {
+        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+      });
+      console.log(res);
+      if (res.status === 201) {
+        setAlert("income successfully added", "success");
+        setIncomeFormDetails({ incomeamount: "", incomecategory: "" });
+      }
+      //update transactions
+      //get income transactions
 
-    let data = { incomeFormDetails };
-
-    fetch("https://pointy-gauge.glitch.me/api/form", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => console.log("Success:", JSON.stringify(response)))
-      .catch((error) => console.error("Error:", error));
+      const getIncomeTransactions = async () => {
+        try {
+          const res = await axios.get("/splitter/personal-income/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          setIncomeTransactions(res.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getIncomeTransactions();
+      //get budget
+      const getBudget = async () => {
+        try {
+          const res = await axios.get("/splitter/personal-budget/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          setBudget(res.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getBudget();
+    } catch (err) {
+      console.log(err);
+    }
   };
-  const categories = [
+  const expenseCategories = [
     {
-      value: "Food",
+      value: "entertainment",
+      label: "Entertainment",
+    },
+    {
+      value: "food",
       label: "Food",
     },
     {
-      value: "Travel",
-      label: "Travel",
+      value: "travelling",
+      label: "Travelling",
     },
     {
-      value: "BTC",
-      label: "฿",
+      value: "groceries",
+      label: "Groceries",
     },
     {
-      value: "JPY",
-      label: "¥",
+      value: "medical",
+      label: "Medical",
+    },
+    {
+      value: "education",
+      label: "Education",
+    },
+    {
+      value: "clothing",
+      label: "Clothing",
+    },
+  ];
+  const incomeCategories = [
+    {
+      value: "employment",
+      label: "Employment",
+    },
+    {
+      value: "investment",
+      label: "Investment",
+    },
+    {
+      value: "business",
+      label: "Business",
+    },
+    {
+      value: "rental",
+      label: "Rental",
+    },
+    {
+      value: "pension",
+      label: "Pension",
+    },
+    {
+      value: "royalties",
+      label: "Royalties",
     },
   ];
   return (
@@ -122,7 +254,7 @@ const Content = () => {
               </Typography>
             </td>
             <td>
-              <p className="m-2">3000</p>
+              <p className="m-2">{budget.total_budget}</p>
             </td>
           </tr>
           <tr>
@@ -130,7 +262,7 @@ const Content = () => {
               <p className="m-2">Income:</p>
             </td>
             <td className="text-success">
-              <p className="m-2">9449</p>
+              <p className="m-2">{budget.total_income}</p>
             </td>
           </tr>
           <tr>
@@ -138,7 +270,7 @@ const Content = () => {
               <p className="m-2">Exprenses:</p>
             </td>
             <td className="text-danger">
-              <p className="m-2">300</p>
+              <p className="m-2">{budget.total_expense}</p>
             </td>
           </tr>
         </table>
@@ -204,8 +336,9 @@ const Content = () => {
                 type="number"
                 label="amount"
                 variant="outlined"
-                name="amount"
-                defaultValue={expenseFormDetails.amount}
+                name="expenseamount"
+                defaultValue={expenseFormDetails.expenseamount}
+                value={expenseFormDetails.expenseamount}
                 onChange={expenseHandleInput}
               />
               <br />
@@ -214,11 +347,11 @@ const Content = () => {
                 style={{ margin: "5px" }}
                 fullWidth
                 label="Select Category"
-                name="category"
-                defaultValue="Food"
-                onChange={expenseHandleInput}>
-                
-                {categories.map((option) => (
+                name="expensecategory"
+                defaultValue=""
+                onChange={expenseHandleInput}
+                value={expenseFormDetails.expensecategory}>
+                {expenseCategories.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
@@ -244,8 +377,8 @@ const Content = () => {
                 type="number"
                 label="amount"
                 variant="outlined"
-                name="amount"
-                defaultValue={transferFormDetails.amount}
+                name="transferamount"
+                defaultValue={transferFormDetails.transferamount}
                 onChange={transferHandleInput}
               />
               <br />
@@ -254,11 +387,10 @@ const Content = () => {
                 style={{ margin: "5px" }}
                 fullWidth
                 label="Transfer to"
-                name="friend"
-                defaultValue="Food"
+                name="transferfriend"
+                defaultValue=""
                 onChange={transferHandleInput}>
-               
-                {categories.map((option) => (
+                {expenseCategories.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
@@ -270,11 +402,10 @@ const Content = () => {
                 style={{ margin: "5px" }}
                 fullWidth
                 label="Select Category"
-                name="category"
-                defaultValue="Food"
+                name="transfercategory"
+                defaultValue=""
                 onChange={transferHandleInput}>
-                
-                {categories.map((option) => (
+                {expenseCategories.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
@@ -299,8 +430,9 @@ const Content = () => {
                 type="number"
                 label="amount"
                 variant="outlined"
-                name="amount"
-                defaultValue={incomeFormDetails.amount}
+                name="incomeamount"
+                defaultValue={incomeFormDetails.incomeamount}
+                value={incomeFormDetails.incomeamount}
                 onChange={incomeHandleInput}
               />
               <br />
@@ -308,12 +440,13 @@ const Content = () => {
                 select
                 style={{ margin: "5px" }}
                 fullWidth
-                label="Transfer to"
-                name="category"
-                defaultValue={incomeFormDetails.category}
+                label="category"
+                name="incomecategory"
+                defaultValue=""
+                value={incomeFormDetails.incomecategory}
                 onChange={incomeHandleInput}>
                 {" "}
-                {categories.map((option) => (
+                {incomeCategories.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
