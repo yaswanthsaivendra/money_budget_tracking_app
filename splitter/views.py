@@ -288,8 +288,8 @@ class TransactionListCreateView(GenericAPIView,
     serializer_class = TransactionSerializer
 
     def get_queryset(self):
-        queryset1 = debt.objects.all().filter(sender=self.request.user)
-        queryset2 = debt.objects.all().filter(receiver=self.request.user)
+        queryset1 = debt.objects.all().filter(sender=self.request.user).filter(is_paid=True)
+        queryset2 = debt.objects.all().filter(receiver=self.request.user).filter(is_paid=True)
         queryset = queryset1.union(queryset2)
         return queryset.order_by('-created_at')
 
@@ -462,3 +462,38 @@ class GetSplitRoomTransactionsListView(GenericAPIView,
 
     def get(self, request:Request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+
+
+## debt and credits
+
+class DebtsListView(GenericAPIView,
+    ListModelMixin,
+    ):
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = TransactionSerializer
+
+    def get_queryset(self):
+        queryset = debt.objects.all().filter(sender=self.request.user).filter(is_paid=False)
+        return queryset.order_by('-created_at')
+
+
+    def get(self, request:Request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class CreditsListView(GenericAPIView,
+    ListModelMixin,
+    ):
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = TransactionSerializer
+
+    def get_queryset(self):
+        queryset = debt.objects.all().filter(receiver=self.request.user).filter(is_paid=False)
+        return queryset.order_by('-created_at')
+
+
+    def get(self, request:Request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+

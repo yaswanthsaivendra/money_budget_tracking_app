@@ -13,7 +13,9 @@ from .views import (
     SplitRoomRetrieveUpdateDeleteView,
     TransactionListCreateView, 
     TransactionRetrieveUpdateDeleteView,
-    GetSplitRoomTransactionsListView
+    GetSplitRoomTransactionsListView,
+    DebtsListView,
+    CreditsListView
 )
 
 urlpatterns = [
@@ -37,6 +39,10 @@ urlpatterns = [
     # Transactions
     path("transactions/", TransactionListCreateView.as_view()),
     path("transactions/<int:pk>/", TransactionRetrieveUpdateDeleteView.as_view()),
+    # credits and debits
+
+    path("debts/", DebtsListView.as_view()),
+    path("credits/", CreditsListView.as_view()),
 
 
 
