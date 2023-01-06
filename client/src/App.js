@@ -187,6 +187,7 @@ function App() {
                     setTransferTransactions={setTransferTransactions}
                     setBudget={setBudget}
                     users={users}
+                    
                   />
                 }
               />

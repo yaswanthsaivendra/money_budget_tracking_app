@@ -270,10 +270,31 @@ const Content = ({
   return (
     <div className="dashboard container content">
       <div className="details">
-        <div className="m-2">
+        <div className="m-2 d-flex justify-content-between">
           <Typography variant="h6">Account Details:</Typography>
+          <Button variant="contained" onClick={()=>{localStorage.clear();window.location.reload()}}>Logout</Button>
         </div>
         <table>
+        <tr>
+            <td>
+              <Typography>
+                <p className="m-2">Username:</p>
+              </Typography>
+            </td>
+            <td>
+              <p className="m-2">{user.username}</p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <Typography>
+                <p className="m-2">Email:</p>
+              </Typography>
+            </td>
+            <td>
+              <p className="m-2">{user.email}</p>
+            </td>
+          </tr>
           <tr>
             <td>
               <Typography>
