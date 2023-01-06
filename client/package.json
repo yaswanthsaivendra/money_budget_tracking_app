@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage":"https://Neha9849.github.io/money_budget_tracking_app",
+  "homepage":"https://yaswanthsaivendra.github.io/money_budget_tracking_app",
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/style": "^0.8.0",
