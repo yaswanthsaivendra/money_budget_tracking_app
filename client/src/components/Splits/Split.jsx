@@ -130,7 +130,6 @@ const Split = ({
           splitters: "",
         });
       }
-      window.location.reload()
       //u[date splits
       const getSplits = async () => {
         try {
