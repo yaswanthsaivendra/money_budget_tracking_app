@@ -108,7 +108,19 @@ const Content = ({ friends, setAlert,user,splits,setSplits}) => {
          splitters: "",
        });
       }
-      //get transactions
+      //u[date splits
+      const getSplits = async () => {
+        try {
+          const res = await axios.get('/splitter/splitroom/', {
+            headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+          })
+          console.log(res)
+          setSplits(res.data)
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      getSplits()
     } catch (err) {
       console.log(err);
     }
@@ -131,7 +143,7 @@ const Content = ({ friends, setAlert,user,splits,setSplits}) => {
           <Divider />
           {splits.map((split)=>{
             return(
-               <><Split amount={split.amount} category={split.category} id={split.id} date={split.created_at} name={split.name} /></>
+               <><Split amount={split.amount} category={split.category} id={split.id} date={split.created_at} name={split.name} creator={split.creator} user={user} initialSplit={split} expenseCategories={expenseCategories} setAlert={setAlert} friendsArray={friendsArray} setSplits={setSplits} friends={friends}/></>
             )
           })}
           

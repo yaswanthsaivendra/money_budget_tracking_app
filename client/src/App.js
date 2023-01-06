@@ -217,15 +217,15 @@ function App() {
                 }
               />
               {/* debts */}
-              <Route path="debts" element={<Debts />} />
+              <Route path="debts" element={<Debts user={user} users={users} setAlert={setAlert} />} />
               {/* splits */}
               <Route
                 path="splits"
                 element={
-                  <Splits friends={friends} setAlert={setAlert} user={user} splits={splits} setSplits={setSplits} />
+                  <Splits friends={friends} setAlert={setAlert} user={user} splits={splits} setSplits={setSplits}/>
                 }
               />
-              <Route path="splits/*" element={<Split splits={splits} setAlert={setAlert} user={user}/>} />
+              <Route path="splits/:id" element={<Split splits={splits} setAlert={setAlert} user={user} users={users} budget={budget}/>} />
             </>
           ) : (
             <Route

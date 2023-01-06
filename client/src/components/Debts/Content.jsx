@@ -1,11 +1,39 @@
-import React from "react";
-import Divider from "@mui/material/Divider";
-import EastIcon from "@mui/icons-material/East";
-import WestIcon from "@mui/icons-material/West";
-import Chip from "@mui/material/Chip";
+import React, {useState, useEffect } from "react";
 import Debt from "./Debt";
+import axios from "../../axios";
 
-const Content = () => {
+const Content = ({users,user,setAlert}) => {
+
+  const [debts,setDebts] = useState([])
+  const [credits,setCredits] = useState([])
+
+  useEffect(()=>{
+    const getDebts = async () => {
+      try {
+        const res = await axios.get('/splitter/debts/', {
+          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+        })
+        // console.log(res)
+        setDebts(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    const getCredits= async () => {
+      try {
+        const res = await axios.get('/splitter/credits/', {
+          headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+        })
+        // console.log(res)
+        setCredits(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+    getDebts()
+    getCredits()
+  },[])
   return (
     <div
       className="container debts m-auto border rounded py-3 px-3"
@@ -46,14 +74,8 @@ const Content = () => {
           aria-labelledby="home-tab">
           <div className="debts p-4 px-2">
             <h5 className="py-2"> Whom You owe:</h5>
-            <Debt type="outgoing" />
-            <Debt type="outgoing" />
-            <Debt type="outgoing" />
-            <Debt type="outgoing" />
-            <Debt type="outgoing" />
-            <Debt type="outgoing" />
-            <Debt type="outgoing" />
-            <Debt type="outgoing" />
+            {debts.length==0 ? <p className="text-center border p-3 rounded">Nothing to show</p>:<></>}
+            {debts.map((item)=>(<Debt type="outgoing" amount={item.amount} category={item.category} sender={item.sender} receiver={item.receiver} date={item.created_at} user={user} users={users} room={item.room}/>))}
           </div>
         </div>
         <div
@@ -63,14 +85,8 @@ const Content = () => {
           aria-labelledby="profile-tab">
           <div className="debts p-4 px-2">
             <h5 className="py-2"> Who owe you:</h5>
-            <Debt type="incoming" />
-            <Debt type="incoming" />
-            <Debt type="incoming" />
-            <Debt type="incoming" />
-            <Debt type="incoming" />
-            <Debt type="incoming" />
-            <Debt type="incoming" />
-            <Debt type="incoming" />
+            {credits.length==0 ? <p className="text-center border p-3 rounded">Nothing to show</p>:<></>}
+            {credits.map((item)=>(<Debt type="incoming" amount={item.amount} category={item.category} sender={item.sender} receiver={item.receiver} date={item.created_at} user={user} users={users} room={item.room}/>))}
           </div>
         </div>
       </div>
