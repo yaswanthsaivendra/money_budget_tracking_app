@@ -39,7 +39,7 @@ const Debt = ({
           </div>
           <div className="transactionSecond d-flex align-items-center">
             <p className="text-danger px-2">-{amount} USD</p>
-            <Link to={`/splits/${room}`} style={{ textDecoration: 'none' }}>
+            <Link to={`/money_budget_tracking_app/splits/${room}`} style={{ textDecoration: 'none' }}>
                <Button variant="outlined">Open Room</Button>
             </Link>
            
@@ -68,7 +68,7 @@ const Debt = ({
           </div>
           <div className="transactionSecond d-flex align-items-center">
             <p className="text-success px-2">+{amount} USD</p>
-            <Link to={`/splits/${room}`} style={{ textDecoration: 'none' }}>
+            <Link to={`/money_budget_tracking_app/splits/${room}`} style={{ textDecoration: 'none' }}>
                <Button variant="outlined">Open Room</Button>
             </Link>
           </div>

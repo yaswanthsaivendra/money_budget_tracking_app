@@ -194,7 +194,7 @@ function App() {
                 <>
                   {/* Dashboard */}
                   <Route
-                    index
+                    path="/money_budget_tracking_app/"
                     element={
                       <Dashboard
                         budget={budget}
@@ -206,12 +206,13 @@ function App() {
                         setTransferTransactions={setTransferTransactions}
                         setBudget={setBudget}
                         users={users}
+                        friends={friends}
                       />
                     }
                   />
                   {/* transactions */}
                   <Route
-                    path="transactions"
+                    path="/money_budget_tracking_app/transactions"
                     element={
                       <Transactions
                         incomeTransactions={incomeTransactions}
@@ -224,7 +225,7 @@ function App() {
                   />
                   {/* friends */}
                   <Route
-                    path="friends"
+                    path="/money_budget_tracking_app/friends"
                     element={
                       <Friends
                         users={users}
@@ -237,14 +238,14 @@ function App() {
                   />
                   {/* debts */}
                   <Route
-                    path="debts"
+                    path="/money_budget_tracking_app/debts"
                     element={
                       <Debts user={user} users={users} setAlert={setAlert} />
                     }
                   />
                   {/* splits */}
                   <Route
-                    path="splits"
+                    path="/money_budget_tracking_app/splits"
                     element={
                       <Splits
                         friends={friends}
@@ -256,7 +257,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="splits/:id"
+                    path="/money_budget_tracking_app/splits/:id"
                     element={
                       <Split
                         splits={splits}

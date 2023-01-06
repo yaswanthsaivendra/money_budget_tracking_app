@@ -215,9 +215,9 @@ const Split = ({
           ) : (
             <></>
           )}
-          <Link to={`/splits/${id}/`} style={{ textDecoration: "none" }}>
+          <a href={`/money_budget_tracking_app/splits/${id}/`} style={{ textDecoration: "none" }}>
             <Button variant="outlined">View</Button>
-          </Link>
+          </a>
         </div>
       </div>
       <Divider />

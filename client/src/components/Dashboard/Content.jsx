@@ -22,7 +22,8 @@ const Content = ({
   budget,
   setBudget,
   users,
-  user
+  user,
+  friends
 }) => {
   const [expenseFormDetails, setExpenseFormDetails] = useState({
     expenseamount: "",
@@ -261,7 +262,8 @@ const Content = ({
     },
   ];
   const transferFriends = [];
-  users.map((item)=>{
+  friends.map((item)=>{
+    
     if(user.id!==item.id){
       transferFriends.push({value:item.id,label:item.username})
     }
