@@ -96,7 +96,7 @@ function Sidebar(props) {
         </Link>
       </List>
       <List>
-        <ListItem key="6" disablePadding>
+        {/* <ListItem key="6" disablePadding>
           <ListItemButton>
             <ListItemIcon>
               <MailIcon />
@@ -111,7 +111,7 @@ function Sidebar(props) {
             </ListItemIcon>
             <ListItemText primary={"About Us"} />
           </ListItemButton>
-        </ListItem>
+        </ListItem> */}
       </List>
     </div>
   );
