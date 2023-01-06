@@ -143,7 +143,7 @@ const Content = ({ friends, setAlert,user,splits,setSplits}) => {
           <Divider />
           {splits.map((split)=>{
             return(
-               <><Split amount={split.amount} category={split.category} id={split.id} date={split.created_at} name={split.name} creator={split.creator} user={user} initialSplit={split} expenseCategories={expenseCategories} setAlert={setAlert} friendsArray={friendsArray} setSplits={setSplits} friends={friends}/></>
+               <><Split amount={split.amount} category={split.category} id={split.id} date={split.created_at} name={split.name} creator={split.creator} user={user} initialSplit={split} expenseCategories={expenseCategories} setAlert={setAlert} friendsArray={friendsArray} setSplits={setSplits} friends={friends} splits={splits} creatorId={split.creator}/></>
             )
           })}
           

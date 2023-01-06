@@ -245,7 +245,7 @@ const Content = ({
               {expenseTransactions.map((item) => (
                 <>
                   {item.category == expenseCat &&
-                  new Date(moment(item.created_at).format("YYYY-MM-DD")) >
+                  new Date(moment(item.created_at).format("YYYY-MM-DD")) >=
                     dateRange.startDate &&
                   new Date(moment(item.created_at).format("YYYY-MM-DD")) <=
                     dateRange.endDate ? (
@@ -261,7 +261,7 @@ const Content = ({
                     <></>
                   )}
                   {expenseCat == "all" &&
-                  new Date(moment(item.created_at).format("YYYY-MM-DD")) >
+                  new Date(moment(item.created_at).format("YYYY-MM-DD")) >=
                     dateRange.startDate &&
                   new Date(moment(item.created_at).format("YYYY-MM-DD")) <=
                     dateRange.endDate ? (
@@ -330,28 +330,30 @@ const Content = ({
               {transferTransactions.map((item) => (
                <>
                {item.category == transferCat &&
-               new Date(moment(item.created_at).format("YYYY-MM-DD")) >
+               new Date(moment(item.created_at).format("YYYY-MM-DD")) >=
                  dateRange.startDate &&
                new Date(moment(item.created_at).format("YYYY-MM-DD")) <=
                  dateRange.endDate ? (
                  <Transaction
-                   type="expense"
+                   type="transfer"
                    amount={item.amount}
                    category={item.category}
                    date={item.created_at}
                    user={user}
                    users={users}
+                   sender={item.sender}
+                   receiver={item.receiver}
                  />
                ) : (
                  <></>
                )}
                {transferCat == "all" &&
-               new Date(moment(item.created_at).format("YYYY-MM-DD")) >
+               new Date(moment(item.created_at).format("YYYY-MM-DD")) >=
                  dateRange.startDate &&
                new Date(moment(item.created_at).format("YYYY-MM-DD")) <=
                  dateRange.endDate ? (
                  <Transaction
-                   type="expense"
+                   type="transfer"
                    amount={item.amount}
                    category={item.category}
                    date={item.created_at}
@@ -413,12 +415,12 @@ const Content = ({
               {incomeTransactions.map((item) => (
                <>
                {item.category == incomeCat &&
-               new Date(moment(item.created_at).format("YYYY-MM-DD")) >
+               new Date(moment(item.created_at).format("YYYY-MM-DD")) >=
                  dateRange.startDate &&
                new Date(moment(item.created_at).format("YYYY-MM-DD")) <=
                  dateRange.endDate ? (
                  <Transaction
-                   type="expense"
+                   type="income"
                    amount={item.amount}
                    category={item.category}
                    date={item.created_at}
@@ -429,12 +431,12 @@ const Content = ({
                  <></>
                )}
                {incomeCat == "all" &&
-               new Date(moment(item.created_at).format("YYYY-MM-DD")) >
+               new Date(moment(item.created_at).format("YYYY-MM-DD")) >=
                  dateRange.startDate &&
                new Date(moment(item.created_at).format("YYYY-MM-DD")) <=
                  dateRange.endDate ? (
                  <Transaction
-                   type="expense"
+                   type="income"
                    amount={item.amount}
                    category={item.category}
                    date={item.created_at}

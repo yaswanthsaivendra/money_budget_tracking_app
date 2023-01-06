@@ -56,3 +56,13 @@ p {
 #splitDetails tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+.laoder{
+  /* height:90vh; */
+  overflow:hidden !important;
+}
+.MuiBackdrop-root{
+  background-color: rgb(255, 255, 255) !important;
+  /* height:100vh !important; */
+  
+   overflow-y:hidden;
+}

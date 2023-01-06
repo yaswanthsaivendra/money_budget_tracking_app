@@ -16,6 +16,8 @@ import * as React from 'react'
 import MuiAlert from '@mui/material/Alert'
 import axios from './axios'
 import Split from './components/Split/Split'
+import Backdrop from '@mui/material/Backdrop'
+import CircularProgress from '@mui/material/CircularProgress'
 
 function App() {
   const [login, setLogin] = useState(false)
@@ -29,6 +31,7 @@ function App() {
   const [budget, setBudget] = useState({})
   const [transferTransactions, setTransferTransactions] = useState([])
   const [splits, setSplits] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     setToken(localStorage.getItem('token'))
@@ -131,6 +134,8 @@ function App() {
     getTransferTransactions()
     getBudget()
     getSplits()
+    setTimeout(() => setLoading(false), 1000)
+    // setLoading(false)
   }, [token])
 
   const [open, setOpen] = useState(false)
@@ -157,86 +162,123 @@ function App() {
 
   return (
     <div className="App">
-      <div>
-        {/* <Button onClick={()=>{setAlert("bye","error")}}>Open simple snackbar</Button> */}
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-          <Alert
-            onClose={handleClose}
-            severity={alertDetails.color}
-            sx={{ width: '100%' }}
+      {loading ? (
+        <div className="laoder">
+          <Backdrop
+            sx={{
+              color: '#1976d2',
+              zIndex: (theme) => theme.zIndex.drawer + 1,
+            }}
+            open={loading}
           >
-            {alertDetails.message}
-          </Alert>
-        </Snackbar>
-      </div>
-      <BrowserRouter>
-        <Routes>
-          {login ? (
-            <>
-            {/* Dashboard */}
-              <Route
-                index
-                element={
-                  <Dashboard
-                    budget={budget}
-                    setAlert={setAlert}
-                    categories={categories}
-                    user={user}
-                    setIncomeTransactions={setIncomeTransactions}
-                    setExpenseTransactions={setExpenseTransactions}
-                    setTransferTransactions={setTransferTransactions}
-                    setBudget={setBudget}
-                    users={users}
-                    
+            <CircularProgress color="inherit" />
+          </Backdrop>
+        </div>
+      ) : (
+        <>
+          <div>
+            {/* <Button onClick={()=>{setAlert("bye","error")}}>Open simple snackbar</Button> */}
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+              <Alert
+                onClose={handleClose}
+                severity={alertDetails.color}
+                sx={{ width: '100%' }}
+              >
+                {alertDetails.message}
+              </Alert>
+            </Snackbar>
+          </div>
+          <BrowserRouter>
+            <Routes>
+              {login ? (
+                <>
+                  {/* Dashboard */}
+                  <Route
+                    index
+                    element={
+                      <Dashboard
+                        budget={budget}
+                        setAlert={setAlert}
+                        categories={categories}
+                        user={user}
+                        setIncomeTransactions={setIncomeTransactions}
+                        setExpenseTransactions={setExpenseTransactions}
+                        setTransferTransactions={setTransferTransactions}
+                        setBudget={setBudget}
+                        users={users}
+                      />
+                    }
                   />
-                }
-              />
-              {/* transactions */}
-              <Route
-                path="transactions"
-                element={
-                  <Transactions
-                    incomeTransactions={incomeTransactions}
-                    expenseTransactions={expenseTransactions}
-                    user={user}
-                    transferTransactions={transferTransactions}
-                    users={users}
-                    
+                  {/* transactions */}
+                  <Route
+                    path="transactions"
+                    element={
+                      <Transactions
+                        incomeTransactions={incomeTransactions}
+                        expenseTransactions={expenseTransactions}
+                        user={user}
+                        transferTransactions={transferTransactions}
+                        users={users}
+                      />
+                    }
                   />
-                }
-              />
-              {/* friends */}
-              <Route
-                path="friends"
-                element={
-                  <Friends
-                    users={users}
-                    setAlert={setAlert}
-                    setFriends={setFriends}
-                    friends={friends}
-                    user={user}
+                  {/* friends */}
+                  <Route
+                    path="friends"
+                    element={
+                      <Friends
+                        users={users}
+                        setAlert={setAlert}
+                        setFriends={setFriends}
+                        friends={friends}
+                        user={user}
+                      />
+                    }
                   />
-                }
-              />
-              {/* debts */}
-              <Route path="debts" element={<Debts user={user} users={users} setAlert={setAlert} />} />
-              {/* splits */}
-              <Route
-                path="splits"
-                element={
-                  <Splits friends={friends} setAlert={setAlert} user={user} splits={splits} setSplits={setSplits}/>
-                }
-              />
-              <Route path="splits/:id" element={<Split splits={splits} setAlert={setAlert} user={user} users={users} budget={budget} setBudget={setBudget}/>} />
-            </>
-          ) : (
-            <Route
-              path="*"
-              element={<Login setAlert={setAlert} setToken={setToken} />}
-            />
-          )}
-        </Routes>
-      </BrowserRouter>
+                  {/* debts */}
+                  <Route
+                    path="debts"
+                    element={
+                      <Debts user={user} users={users} setAlert={setAlert} />
+                    }
+                  />
+                  {/* splits */}
+                  <Route
+                    path="splits"
+                    element={
+                      <Splits
+                        friends={friends}
+                        setAlert={setAlert}
+                        user={user}
+                        splits={splits}
+                        setSplits={setSplits}
+                      />
+                    }
+                  />
+                  <Route
+                    path="splits/:id"
+                    element={
+                      <Split
+                        splits={splits}
+                        setAlert={setAlert}
+                        user={user}
+                        users={users}
+                        budget={budget}
+                        setBudget={setBudget}
+                      />
+                    }
+                  />
+                </>
+              ) : (
+                <Route
+                  path="*"
+                  element={<Login setAlert={setAlert} setToken={setToken} />}
+                />
+              )}
+            </Routes>
+          </BrowserRouter>
+        </>
+      )}
     </div>
   )
 }

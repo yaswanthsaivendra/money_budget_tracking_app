@@ -17,6 +17,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import axios from "../../axios";
 import EditIcon from "@mui/icons-material/Edit";
+import { useEffect ,useState} from "react";
 
 const Split = ({
   name,
@@ -32,10 +33,14 @@ const Split = ({
   friendsArray,
   setSplits,
   friends,
+  splits,
+  creatorId
 }) => {
-  // friends.push(user)
+  // const [splitState,setSplitState] = useState(initialSplit);
 
-  const splitters = [];
+  // friends.push(user)
+ 
+  let splitters = [];
   initialSplit.splitters.forEach((splitter) => {
     friends.map((item) => {
       if (splitter == item.id) {
@@ -67,15 +72,27 @@ const Split = ({
   };
   const handleClose = () => {
     setOpen(false);
-    // splitters=[]
-    setSplit({
-      name: initialSplit.name,
-      amount: initialSplit.amount,
-      description: initialSplit.description,
-      category: initialSplit.category,
-      payer: initialSplit.payer,
-      splitters: splitters,
+    splits.forEach((item)=>{
+      if(item.id==id){
+        initialSplit=item;
+      }
+    })
+    splitters=[]
+    initialSplit.splitters.forEach((splitter) => {
+      friends.map((item) => {
+        if (splitter == item.id) {
+          splitters.push({ value: item.id, label: item.username });
+        }
+      });
     });
+    // setSplit({
+    //   name: initialSplit.name,
+    //   amount: initialSplit.amount,
+    //   description: initialSplit.description,
+    //   category: initialSplit.category,
+    //   payer: initialSplit.payer,
+    //   splitters: splitters,
+    // });
   };
   //split put
   const splitSubmit = async (evt) => {
@@ -113,6 +130,7 @@ const Split = ({
           splitters: "",
         });
       }
+      window.location.reload()
       //u[date splits
       const getSplits = async () => {
         try {
@@ -175,7 +193,7 @@ const Split = ({
         </div>
         <div className="transactionSecond d-flex">
           
-          {user.id === creator ? (
+          {user.id === creatorId ? (
             <Button
               color="primary"
               variant="outlined"
@@ -186,7 +204,7 @@ const Split = ({
           ) : (
             <></>
           )}
-          {user.id === creator ? (
+          {user.id === creatorId ? (
             <Button
               color="primary"
               variant="outlined"
