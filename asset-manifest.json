@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/money_budget_tracking_app/static/css/main.c2c8d016.css",
-    "main.js": "/money_budget_tracking_app/static/js/main.5a15b492.js",
+    "main.js": "/money_budget_tracking_app/static/js/main.aef064e4.js",
     "static/js/787.cda612ba.chunk.js": "/money_budget_tracking_app/static/js/787.cda612ba.chunk.js",
     "index.html": "/money_budget_tracking_app/index.html",
     "main.c2c8d016.css.map": "/money_budget_tracking_app/static/css/main.c2c8d016.css.map",
-    "main.5a15b492.js.map": "/money_budget_tracking_app/static/js/main.5a15b492.js.map",
+    "main.aef064e4.js.map": "/money_budget_tracking_app/static/js/main.aef064e4.js.map",
     "787.cda612ba.chunk.js.map": "/money_budget_tracking_app/static/js/787.cda612ba.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c2c8d016.css",
-    "static/js/main.5a15b492.js"
+    "static/js/main.aef064e4.js"
   ]
 }
