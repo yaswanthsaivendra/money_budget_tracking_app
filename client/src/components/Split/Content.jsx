@@ -7,7 +7,7 @@ import moment from "moment";
 import Transaction from "./Transaction";
 import { Link } from "react-router-dom";
 
-const Content = ({ splits, setAlert, user, users, budget }) => {
+const Content = ({ splits, setAlert, user, users, budget,setBudget }) => {
   const [split, setSplit] = useState({});
   const [transactions, setTransactions] = useState([]);
   let { id } = useParams();
@@ -145,6 +145,7 @@ const Content = ({ splits, setAlert, user, users, budget }) => {
                 user={user}
                 setAlert={setAlert}
                 budget={budget}
+                setBudget={setBudget}
               />
             ))}
           </div>

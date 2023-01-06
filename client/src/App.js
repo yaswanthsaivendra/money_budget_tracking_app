@@ -200,6 +200,7 @@ function App() {
                     user={user}
                     transferTransactions={transferTransactions}
                     users={users}
+                    
                   />
                 }
               />
@@ -225,7 +226,7 @@ function App() {
                   <Splits friends={friends} setAlert={setAlert} user={user} splits={splits} setSplits={setSplits}/>
                 }
               />
-              <Route path="splits/:id" element={<Split splits={splits} setAlert={setAlert} user={user} users={users} budget={budget}/>} />
+              <Route path="splits/:id" element={<Split splits={splits} setAlert={setAlert} user={user} users={users} budget={budget} setBudget={setBudget}/>} />
             </>
           ) : (
             <Route

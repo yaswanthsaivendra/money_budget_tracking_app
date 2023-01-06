@@ -9,7 +9,7 @@ import Button from "@mui/material/Button"
 import axios from '../../axios'
 import { useState } from 'react';
 
-const Transaction = ({amount,category,sender,receiver,date,users,id,user,is_paid,setAlert,budget}) => {
+const Transaction = ({amount,category,sender,receiver,date,users,id,user,is_paid,setAlert,budget,setBudget}) => {
   const [paid,setPaid] = useState(is_paid)
     const formattedDate = moment(date).format("MMM D, YYYY");
     //pay fxn
@@ -23,7 +23,20 @@ const Transaction = ({amount,category,sender,receiver,date,users,id,user,is_paid
           console.log(res);
           setAlert("successfully paid","success")
           setPaid(true)
-          
+          //update budget
+          const getBudget = async () => {
+            try {
+              const res = await axios.get("/splitter/personal-budget/", {
+                headers: {
+                  Authorization: `Token ${localStorage.getItem("token")}`,
+                },
+              });
+              setBudget(res.data);
+            } catch (err) {
+              console.log(err);
+            }
+          };
+          getBudget()
         } catch (err) {
           console.log(err);
         }
