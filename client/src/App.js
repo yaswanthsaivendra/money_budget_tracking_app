@@ -189,8 +189,8 @@ function App() {
               </Alert>
             </Snackbar>
           </div>
-          <HashRouter>
-          {/* <BrowserRouter> */}
+          {/* <HashRouter */}
+          <BrowserRouter>
             <Routes>
               {login ? (
                 <>
@@ -279,8 +279,7 @@ function App() {
                 />
               )}
             </Routes>
-          {/* </BrowserRouter> */}
-          </HashRouter>
+          </BrowserRouter>
         </>
       )}
     </div>
