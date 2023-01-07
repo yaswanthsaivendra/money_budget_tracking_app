@@ -14,7 +14,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import axios from "../../axios";
 import { useEffect } from "react";
 
-const Content = ({ friends, setAlert,user,splits,setSplits}) => {
+const Content = ({ friends, setAlert, user, splits, setSplits }) => {
   const [open, setOpen] = React.useState(false);
   const [split, setSplit] = React.useState({
     name: "",
@@ -24,12 +24,31 @@ const Content = ({ friends, setAlert,user,splits,setSplits}) => {
     payer: "",
     splitters: "",
   });
+
+  
+  useEffect(() => {
+    //get splits
+    const getSplits = async () => {
+      try {
+        const res = await axios.get("/splitter/splitroom/", {
+          headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+        });
+        console.log(res);
+        setSplits(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getSplits();
+  }, []);
+
   //form handle
   const splitHandleInput = (evt) => {
     const name = evt.target.name;
     const newValue = evt.target.value;
     setSplit({ ...split, [name]: newValue });
   };
+
   //model
   const handleClickOpen = () => {
     setOpen(true);
@@ -37,12 +56,13 @@ const Content = ({ friends, setAlert,user,splits,setSplits}) => {
   const handleClose = () => {
     setOpen(false);
   };
+
   //data arrays
   const friendsArray = [];
   friends.map((item) => {
     friendsArray.push({ value: item.id, label: item.username });
   });
-  friendsArray.push({value:user.id,label:user.username});
+  friendsArray.push({ value: user.id, label: user.username });
   const expenseCategories = [
     {
       value: "entertainment",
@@ -74,22 +94,20 @@ const Content = ({ friends, setAlert,user,splits,setSplits}) => {
     },
   ];
 
-  
-
   //split post
   const splitSubmit = async (evt) => {
     evt.preventDefault();
-    const splitterArrayForm = []
-    split.splitters.map((splitter)=>{
+    const splitterArrayForm = [];
+    split.splitters.map((splitter) => {
       splitterArrayForm.push(splitter.value);
-    })
+    });
     let data = {
       name: split.name,
       amount: split.amount,
       category: split.category,
-      payer:split.payer,
-      splitters:splitterArrayForm,
-      description: split.description
+      payer: split.payer,
+      splitters: splitterArrayForm,
+      description: split.description,
     };
     console.log(data);
     try {
@@ -100,27 +118,29 @@ const Content = ({ friends, setAlert,user,splits,setSplits}) => {
       if (res.status === 201) {
         setAlert("transfer successful", "success");
         setSplit({
-         name: "",
-         amount: "",
-         description: "",
-         category: "",
-         payer: "",
-         splitters: "",
-       });
+          name: "",
+          amount: "",
+          description: "",
+          category: "",
+          payer: "",
+          splitters: "",
+        });
       }
       //u[date splits
       const getSplits = async () => {
         try {
-          const res = await axios.get('/splitter/splitroom/', {
-            headers: { Authorization: `Token ${localStorage.getItem('token')}` },
-          })
-          console.log(res)
-          setSplits(res.data)
+          const res = await axios.get("/splitter/splitroom/", {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          });
+          console.log(res);
+          setSplits(res.data);
         } catch (err) {
-          console.log(err)
+          console.log(err);
         }
-      }
-      getSplits()
+      };
+      getSplits();
     } catch (err) {
       console.log(err);
     }
@@ -141,21 +161,36 @@ const Content = ({ friends, setAlert,user,splits,setSplits}) => {
         </div>
         <div className="transactions">
           <Divider />
-          {splits.map((split)=>{
-            return(
-               <><Split amount={split.amount} category={split.category} id={split.id} date={split.created_at} name={split.name} creator={split.creator} user={user} initialSplit={split} expenseCategories={expenseCategories} setAlert={setAlert} friendsArray={friendsArray} setSplits={setSplits} friends={friends} splits={splits} creatorId={split.creator}/></>
-            )
+          {splits.map((split) => {
+            return (
+              <>
+                <Split
+                  amount={split.amount}
+                  category={split.category}
+                  id={split.id}
+                  date={split.created_at}
+                  name={split.name}
+                  creator={split.creator}
+                  user={user}
+                  initialSplit={split}
+                  expenseCategories={expenseCategories}
+                  setAlert={setAlert}
+                  friendsArray={friendsArray}
+                  setSplits={setSplits}
+                  friends={friends}
+                  splits={splits}
+                  creatorId={split.creator}
+                />
+              </>
+            );
           })}
-          
-          
         </div>
       </div>
       {/* add split model */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle sx={{ minWidth: "500px" }}>Add Split</DialogTitle>
         <form onSubmit={splitSubmit}>
-        <DialogContent>
-          
+          <DialogContent>
             <TextField
               style={{ margin: "5px" }}
               fullWidth
@@ -262,12 +297,13 @@ const Content = ({ friends, setAlert,user,splits,setSplits}) => {
             </div>
 
             <br />
-         
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose} type="submit">Add</Button>
-        </DialogActions>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose} type="submit">
+              Add
+            </Button>
+          </DialogActions>
         </form>
       </Dialog>
     </div>

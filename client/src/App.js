@@ -18,6 +18,7 @@ import axios from './axios'
 import Split from './components/Split/Split'
 import Backdrop from '@mui/material/Backdrop'
 import CircularProgress from '@mui/material/CircularProgress'
+import {HashRouter} from 'react-router-dom'
 
 function App() {
   const [login, setLogin] = useState(false)
@@ -188,7 +189,8 @@ function App() {
               </Alert>
             </Snackbar>
           </div>
-          <BrowserRouter>
+          <HashRouter>
+          {/* <BrowserRouter> */}
             <Routes>
               {login ? (
                 <>
@@ -277,7 +279,8 @@ function App() {
                 />
               )}
             </Routes>
-          </BrowserRouter>
+          {/* </BrowserRouter> */}
+          </HashRouter>
         </>
       )}
     </div>

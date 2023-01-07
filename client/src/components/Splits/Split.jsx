@@ -130,6 +130,7 @@ const Split = ({
           splitters: "",
         });
       }
+      window.location.reload()
       //u[date splits
       const getSplits = async () => {
         try {
@@ -214,9 +215,9 @@ const Split = ({
           ) : (
             <></>
           )}
-          <Link to={`/money_budget_tracking_app/splits/${id}/`} style={{ textDecoration: "none" }}>
+          <a href={`/#/money_budget_tracking_app/splits/${id}/`} style={{ textDecoration: "none" }}>
             <Button variant="outlined">View</Button>
-          </Link>
+          </a>
         </div>
       </div>
       <Divider />
