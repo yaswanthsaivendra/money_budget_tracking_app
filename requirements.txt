@@ -1,7 +1,10 @@
-dj-database-url
 Django
+#drf
 django-cors-headers
 django-rest-framework
+# server running
 gunicorn
-psycopg2-binary==2.9.9
-whitenoise==6.6.0
+# databases
+psycopg2
+dj-database-url
+
