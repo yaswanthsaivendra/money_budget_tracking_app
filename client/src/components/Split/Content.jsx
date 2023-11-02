@@ -88,7 +88,7 @@ const Content = ({ splits, setAlert, user, users, budget,setBudget }) => {
           style={{ maxWidth: "1100px", minHeight: "600px" }}>
           <div className="d-flex justify-content-between pb-3 px-4">
             <h5 className="m-2 text-capitalize">{split.name}</h5>
-            <div className=""><a href="/splits/"><Button variant="contained">Go back</Button></a></div>
+            <div className=""><Link to="/money_budget_tracking_app/splits/"><Button variant="contained">Go back</Button></Link></div>
           </div>
           <div className="p-4">
             <table id="splitDetails">

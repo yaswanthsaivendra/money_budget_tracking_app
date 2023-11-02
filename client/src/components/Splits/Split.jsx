@@ -127,10 +127,10 @@ const Split = ({
           description: "",
           category: "",
           payer: "",
-          splitters: "",
+          splitters: [],
         });
       }
-      window.location.reload()
+      
       //u[date splits
       const getSplits = async () => {
         try {
@@ -215,7 +215,7 @@ const Split = ({
           ) : (
             <></>
           )}
-          <Link to={`/splits/${id}/`} style={{ textDecoration: "none" }}>
+          <Link to={`/money_budget_tracking_app/splits/${id}/`} style={{ textDecoration: "none" }}>
             <Button variant="outlined">View</Button>
           </Link>
         </div>

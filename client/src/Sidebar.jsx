@@ -42,7 +42,7 @@ function Sidebar(props) {
       />
       <Divider />
       <List>
-        <Link to="/">
+        <Link to="/money_budget_tracking_app/">
           <ListItem key="1" disablePadding>
             <ListItemButton>
               <ListItemIcon>
@@ -53,7 +53,7 @@ function Sidebar(props) {
           </ListItem>
         </Link>
         {/* <Divider /> */}
-        <Link to="/transactions">
+        <Link to="/money_budget_tracking_app/transactions">
           <ListItem key="2" disablePadding>
             <ListItemButton>
               <ListItemIcon>
@@ -64,7 +64,7 @@ function Sidebar(props) {
           </ListItem>
         </Link>
         {/* <Divider /> */}
-        <Link to="/debts">
+        <Link to="/money_budget_tracking_app/debts">
           <ListItem key="3" disablePadding>
             <ListItemButton>
               <ListItemIcon>
@@ -74,7 +74,7 @@ function Sidebar(props) {
             </ListItemButton>
           </ListItem>
         </Link>
-        <Link to="/friends">
+        <Link to="/money_budget_tracking_app/friends">
           <ListItem key="4" disablePadding>
             <ListItemButton>
               <ListItemIcon>
@@ -84,7 +84,7 @@ function Sidebar(props) {
             </ListItemButton>
           </ListItem>
         </Link>
-        <Link to="/splits">
+        <Link to="/money_budget_tracking_app/splits">
           <ListItem key="5" disablePadding>
             <ListItemButton>
               <ListItemIcon>
