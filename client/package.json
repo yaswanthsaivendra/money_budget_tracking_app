@@ -4,6 +4,7 @@
   "private": true,
   "homepage":"https://yaswanthsaivendra.github.io/money_budget_tracking_app",
   "dependencies": {
+    "react": "^18.2.0",
     "@emotion/react": "^11.10.5",
     "@emotion/style": "^0.8.0",
     "@emotion/styled": "^11.10.5",
@@ -18,7 +19,6 @@
     "js-cookie": "^3.0.1",
     "moment": "^2.29.4",
     "mui-daterange-picker": "^1.0.5",
-    "react": "^18.2.0",
     "react-bootstrap": "^2.7.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.6.1",
